@@ -7,13 +7,13 @@ class Users {
     - email
 }
 
-' user_to: Usuario id al que se le envia el mensaje
+' group_to: Chat id al que se le envia el mensaje
 class Messages{
     - id
     - message
     - date
     - Users_id
-    - user_to 
+    - group_to
 }
 
 Users -- Messages

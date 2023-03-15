@@ -1,10 +1,13 @@
 @startuml Microservice diagram
 
+cloud login
 cloud user_info as user
 cloud comunication as com
 database database as db
 
 com - user : get/set user info
 user - db
+login -- user : get user/password
+login -- com : start comunication
 
 @enduml

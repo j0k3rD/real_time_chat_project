@@ -1,14 +1,15 @@
 @startuml
 :User: as User
 :Admin: as Admin
-(Leer y enviar mensajes) as (Use)
+(Leer mensajes) as (Read)
+(Escribir mensajes) as (Write)
 (Crear usuarios) as (Create)
+(Loguearse) as (Loguearse User)
+(Loguearse) as (Loguearse Admin)
 
-Admin --> (Loguearse)
-Admin ---> (Use)
-Admin --> (Create)
-User --> (Loguearse)
-User --> (Use)
+Admin --> (Loguearse Admin)
+Admin --> (Loguearse User)
+User --> (Loguearse User)
 
 note right of Admin
   Encargado del manejo 
@@ -20,7 +21,8 @@ note right of User
   otros usuarios.
 end note
 
-(Loguearse) ..> (Create) : <<extends>>
-(Loguearse) ..> (Use) : <<extends>>
+(Loguearse Admin) <.. (Create) : <<extends>>
+(Loguearse User) <.. (Read) : <<extends>>
+(Loguearse User) <.. (Write) : <<extends>>
 
 @enduml
