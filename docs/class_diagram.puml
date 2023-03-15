@@ -1,0 +1,21 @@
+@startuml Class diagram
+
+class Users {
+    - id
+    - username
+    - password
+    - email
+}
+
+' user_to: Usuario id al que se le envia el mensaje
+class Messages{
+    - id
+    - message
+    - date
+    - Users_id
+    - user_to 
+}
+
+Users -- Messages
+
+@enduml

@@ -1,0 +1,26 @@
+@startuml
+:User: as User
+:Admin: as Admin
+(Leer y enviar mensajes) as (Use)
+(Crear usuarios) as (Create)
+
+Admin --> (Loguearse)
+Admin ---> (Use)
+Admin --> (Create)
+User --> (Loguearse)
+User --> (Use)
+
+note right of Admin
+  Encargado del manejo 
+  de la base de datos.
+end note
+
+note right of User
+  Enviar mensajes entre
+  otros usuarios.
+end note
+
+(Loguearse) ..> (Create) : <<extends>>
+(Loguearse) ..> (Use) : <<extends>>
+
+@enduml
