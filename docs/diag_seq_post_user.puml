@@ -1,0 +1,40 @@
+@startuml Sequency diagram of User database
+
+actor Microservice
+boundary UserController
+
+participant UserValidate
+participant UserService
+participant UserRepository
+participant UserSchema
+entity UserModel
+database data
+
+Microservice -> UserController: POST (user_info)
+activate UserController
+UserController -> UserValidate: validate(user_info)
+activate UserValidate
+UserValidate -> UserSchema: load(data)
+deactivate UserValidate
+activate UserSchema
+UserSchema -> UserController: model
+deactivate UserSchema
+UserController -> UserService: add(model)
+activate UserService
+UserService -> UserRepository: create(model)
+deactivate UserService
+activate UserRepository
+UserRepository -> UserModel: commit(model)
+deactivate UserRepository
+activate UserModel
+UserModel -> data: Insert
+UserModel <- data: Object
+UserModel -> UserSchema: Object user
+deactivate UserModel
+activate UserSchema
+UserSchema -> UserController: Json user
+deactivate UserSchema
+UserController -> Microservice : Json
+deactivate UserController
+
+@enduml

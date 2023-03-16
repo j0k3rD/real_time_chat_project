@@ -1,0 +1,36 @@
+@startuml Sequency diagram of User database
+
+actor Microservice
+boundary UserController
+
+participant UserResource
+participant UserService
+participant UserRepository
+participant UserSchema
+entity UserModel
+database data
+
+Microservice -> UserController: GET (user_info)
+activate UserController
+UserController -> UserResource: get_user_info()
+activate UserResource
+UserResource -> UserService: get_user_info()
+deactivate UserResource
+activate UserService
+UserService -> UserRepository: get_user_info()
+deactivate UserService
+activate UserRepository
+UserRepository -> UserModel: get()
+deactivate UserRepository
+activate UserModel
+UserModel -> data: query (SELECT)
+UserModel <- data: Object
+UserModel -> UserSchema: Object course
+deactivate UserModel
+activate UserSchema
+UserSchema -> UserController: Json user
+deactivate UserSchema
+UserController -> Microservice : Json
+deactivate UserController
+
+@enduml
