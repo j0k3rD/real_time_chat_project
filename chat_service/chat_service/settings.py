@@ -80,12 +80,16 @@ WSGI_APPLICATION = 'chat_service.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'DATABASE_ENGINE': 'mysql',
         'NAME': os.path.join(
         os.path.dirname(os.path.dirname(PROJECT_ROOT)),
         'user_service', 
         'development.db'
     ),
+        'DATABASE_USER': 'chat_service',
+        'DATABASE_PASSWORD': '5687',
+        'DATABASE_HOST': '',
+        'DATABASE_PORT': ''
     },
 }
 
