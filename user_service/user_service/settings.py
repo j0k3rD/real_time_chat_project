@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'user_service.wsgi.application'
 
 DATABASES = {
     'default': {
-        'DATABASE_ENGINE': 'mysql',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': os.path.join(PROJECT_ROOT, 'chat_real_time.db'),
         'DATABASE_USER': 'user_service',
         'DATABASE_PASSWORD': '1243',
