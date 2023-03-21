@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'user_service.wsgi.application'
 DATABASES = {
     'default': {
         'DATABASE_ENGINE': 'mysql',
-        'NAME': os.path.join(PROJECT_ROOT, 'development.db'),
+        'NAME': os.path.join(PROJECT_ROOT, 'chatrealtime.db'),
         'DATABASE_USER': 'user_service',
         'DATABASE_PASSWORD': '1243',
         'DATABASE_HOST': 'localhost',
