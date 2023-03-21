@@ -1,0 +1,36 @@
+@startuml Sequency diagram of User database
+
+actor Microservice
+boundary ChatController
+
+participant ChatResource
+participant ChatService
+participant ChatRepository
+participant ChatSchema
+entity ChatModel
+database data
+
+Microservice -> ChatController: GET (message)
+activate ChatController
+ChatController -> ChatResource: get_message()
+activate ChatResource
+ChatResource -> ChatService: get_message()
+deactivate ChatResource
+activate ChatService
+ChatService -> ChatRepository: get_message()
+deactivate ChatService
+activate ChatRepository
+ChatRepository -> ChatModel: get()
+deactivate ChatRepository
+activate ChatModel
+ChatModel -> data: query (SELECT)
+ChatModel <- data: Object
+ChatModel -> ChatSchema: Object course
+deactivate ChatModel
+activate ChatSchema
+ChatSchema -> ChatController: Json user
+deactivate ChatSchema
+ChatController -> Microservice : Json
+deactivate ChatController
+
+@enduml

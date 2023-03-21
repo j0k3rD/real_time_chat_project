@@ -1,0 +1,40 @@
+@startuml Sequency diagram of User database
+
+actor Microservice
+boundary ChatController
+
+participant ChatValidate
+participant ChatService
+participant ChatRepository
+participant ChatSchema
+entity ChatModel
+database data
+
+Microservice -> ChatController: POST (message)
+activate ChatController
+ChatController -> ChatValidate: validate(message)
+activate ChatValidate
+ChatValidate -> ChatSchema: load(data)
+deactivate ChatValidate
+activate ChatSchema
+ChatSchema -> ChatController: model
+deactivate ChatSchema
+ChatController -> ChatService: add(model)
+activate ChatService
+ChatService -> ChatRepository: create(model)
+deactivate ChatService
+activate ChatRepository
+ChatRepository -> ChatModel: commit(model)
+deactivate ChatRepository
+activate ChatModel
+ChatModel -> data: Insert
+ChatModel <- data: Object
+ChatModel -> ChatSchema: Object user
+deactivate ChatModel
+activate ChatSchema
+ChatSchema -> ChatController: Json user
+deactivate ChatSchema
+ChatController -> Microservice : Json
+deactivate ChatController
+
+@enduml
