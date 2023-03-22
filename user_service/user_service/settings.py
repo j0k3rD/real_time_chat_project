@@ -83,10 +83,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.path.join(PROJECT_ROOT, 'chat_real_time.db'),
-        'DATABASE_USER': 'user_service',
-        'DATABASE_PASSWORD': '1243',
-        'DATABASE_HOST': 'localhost',
-        'DATABASE_PORT': '3307'
+        'DATABASE_USER': config('DATABASE_USER'),
+        'DATABASE_PASSWORD': config('DATABASE_PASSWORD'),
+        'DATABASE_HOST': config('DATABASE_HOST'),
+        'DATABASE_PORT': config('DATABASE_PORT'),
     }
 }
 

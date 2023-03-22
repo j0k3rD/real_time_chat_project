@@ -86,10 +86,10 @@ DATABASES = {
         'user_service', 
         'chat_real_time.db'
     ),
-        'DATABASE_USER': '',
-        'DATABASE_PASSWORD': '',
-        'DATABASE_HOST': '',
-        'DATABASE_PORT': ''
+        'DATABASE_USER': config('DATABASE_USER'),
+        'DATABASE_PASSWORD': config('DATABASE_PASSWORD'),
+        'DATABASE_HOST': config('DATABASE_HOST'),
+        'DATABASE_PORT': config('DATABASE_PORT'),
     },
 }
 
