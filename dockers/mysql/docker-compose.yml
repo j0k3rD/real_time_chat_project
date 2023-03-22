@@ -9,7 +9,7 @@ services:
         networks:
             - red
         ports:
-            - "3306:3306"
+            - "3305:3306"
         environment:
             - MYSQL_USER=${MYSQL_USER}
             - MYSQL_PASSWORD=${MYSQL_PASSWORD}
