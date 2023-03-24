@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('group/<int:group_id>/', views.group_chat, name='group_chat'),
+    path('send_message/', views.send_message, name='send_message'),
 ]
