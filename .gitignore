@@ -1,3 +1,4 @@
 .env
 _data
 virtual/*
+env_file

@@ -15,7 +15,7 @@ import os
 from decouple import config
 
 # Set the project root directory
-PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+# PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -82,11 +82,12 @@ WSGI_APPLICATION = 'user_service.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.path.join(PROJECT_ROOT, 'chat_real_time.db'),
-        'DATABASE_USER': config('DATABASE_USER'),
-        'DATABASE_PASSWORD': config('DATABASE_PASSWORD'),
-        'DATABASE_HOST': config('DATABASE_HOST'),
-        'DATABASE_PORT': config('DATABASE_PORT'),
+        # 'NAME': os.path.join(PROJECT_ROOT, 'chat_real_time.db'),
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
+        'HOST': config('DATABASE_HOST'),
+        'PORT': config('DATABASE_PORT'),
     }
 }
 
