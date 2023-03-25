@@ -1,0 +1,1 @@
+# Aqui van los templates de user (por el momento)
