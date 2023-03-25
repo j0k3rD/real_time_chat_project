@@ -59,7 +59,7 @@ ROOT_URLCONF = 'chat_service.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ["real_time_chat_project/chat_service/templates/real_time_chat_project"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
