@@ -6,3 +6,4 @@ requests==2.28.2
 python-decouple==3.4
 pymysql==1.0.2
 pytest-django==4.5.2
+distutils-pytest==0.2
