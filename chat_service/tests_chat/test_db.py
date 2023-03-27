@@ -28,3 +28,5 @@ def test_get_message():
     assert message2.username == 'test2'
     assert message1.group_to == 'test1'
     assert message2.group_to == 'test2'
+
+    assert message1.id > 0
