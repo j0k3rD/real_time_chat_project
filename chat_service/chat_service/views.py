@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
-from chat.models import Message
+#from chat.models import Message
 
 '''@login_required
 def group_chat(request, group_id):

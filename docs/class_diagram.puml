@@ -7,15 +7,20 @@ class Users {
     - email
 }
 
-' group_to: Chat id al que se le envia el mensaje
 class Messages{
     - id
     - message
     - date
     - Users_id
-    - group_to
+    - group_id
+}
+
+class Group{
+    - id
+    - name
 }
 
 Users -- Messages
+Messages -- Group
 
 @enduml
