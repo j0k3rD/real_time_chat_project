@@ -9,7 +9,7 @@ services:
         networks:
             - red
         ports:
-            - "3305:3306"
+            - "30000:3306"
         env_file:
             - env_file
         volumes:
