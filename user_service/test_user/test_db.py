@@ -20,4 +20,6 @@ def test_get_user():
     user = User.objects.get(username='test1')
     assert user.username == 'test1'
 
+    assert user.id > 0
+
 
