@@ -11,9 +11,8 @@ from django.http import HttpResponse
 # @login_required
 def group_chat(request, group_id):
     group = Group.objects.get(id=group_id)
-    return render(request, 'group.html', {'group': group})
-    # messages = Message.objects.filter(group=group).order_by('timestamp')
-    # return render(request, 'group.html', {'group': group, 'messages': messages})
+    messages = Message.objects.filter(group=group).order_by('date')
+    return render(request, 'group.html', {'group': group, 'messages': messages})
 
 # @login_required
 # def send_message(request):
