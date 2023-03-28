@@ -17,7 +17,7 @@ def group_chat(request, group_id):
 # @login_required
 def send_message(request):
     if request.method == 'POST':
-        content = request.POST.get('content')
+        content = request.POST.get('form_message')
         group_id = request.POST.get('group_id')
         sender = request.user
         group = Group.objects.get(id=group_id)
