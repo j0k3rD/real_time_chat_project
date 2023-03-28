@@ -3,6 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from chat.models import Message, Group
+from django.template.loader import get_template
+from django.template import Context
+from django.http import HttpResponse
+
 
 # @login_required
 def group_chat(request, group_id):
