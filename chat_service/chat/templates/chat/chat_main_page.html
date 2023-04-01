@@ -5,42 +5,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="/chat_project/real_time_chat_project/chat_service/chat/static/style/styles.css">
-    <title>Chat GPT</title>
-    <h2>Group Name: {{ group_name }}</h2>
+    <link rel="stylesheet" href="/real_time_chat_project/chat_service/chat/static/style/styles.css">
+    <title>Real time chat</title>
 </head>
 <body class="fondo">
-    <div>
+    <div class="">
         <header class="header">
           <nav class="navbar navbar-light bg-light">
             <div class="container-fluid">
               <a class="navbar-brand" href="#">
-                <img src="/chat_project/real_time_chat_project/chat_service/chat/static/img/live-chat-logo.png" alt="" width="80" height="60" class="d-inline-block align-text-center">
+                <img src="/real_time_chat_project/chat_service/chat/static/img/live-chat-logo.png" alt="" width="80" height="60" class="d-inline-block align-text-center">
                 Real time chat
               </a>
             </div>
           </nav>
         </header>
     </div>
+    
     <div class="card-body d-flex justify-content-center">
-        <div class="card card-chat" style="width: 18rem;">
-            <img class="chat-img" src="/chat_project/real_time_chat_project/chat_service/chat/static/img/Eighty_Six_logo.png">
-            <div class="card-body">
-              <h5 class="card-title">Grupo</h5>
-              <p class="card-text">Aquí va el texto relacionado a la descripción del grupo.</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-          </div>
-          <div class="card card-chat" style="width: 18rem;">
-            <img class="chat-img" src="/real_time_chat_project/chat_service/chat/static/img/Eighty_Six_logo.png">
-            <div class="card-body">
-              <h5 class="card-title">Grupo</h5>
-              <p class="card-text">Aquí va el texto relacionado a la descripción del grupo.</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-          </div>
-    </div>
-    <div class="card-body d-flex justify-content-center">
+      {% for group in groups %}
         <div class="card card-chat" style="width: 18rem;">
             <img class="chat-img" src="/real_time_chat_project/chat_service/chat/static/img/Eighty_Six_logo.png">
             <div class="card-body">
@@ -48,16 +31,11 @@
               <p class="card-text">Aquí va el texto relacionado a la descripción del grupo.</p>
               <a href="#" class="btn btn-primary">Go somewhere</a>
             </div>
-          </div>
-          <div class="card card-chat" style="width: 18rem;">
-            <img class="chat-img" src="/real_time_chat_project/chat_service/chat/static/img/Eighty_Six_logo.png">
-            <div class="card-body">
-              <h5 class="card-title">Grupo</h5>
-              <p class="card-text">Aquí va el texto relacionado a la descripción del grupo.</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-          </div>
+        </div>
+        
+      {% endfor %}
     </div>
+    
     <footer class="footer mt-auto py-3">
         <span style="margin: 10px ;" class="text-muted">Real time chat ©<script>document.write(new Date().getFullYear())</script> </span>
     </footer>

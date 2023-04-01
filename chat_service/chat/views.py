@@ -20,6 +20,13 @@ def group_chat(request, group_id):
 
     return render(request, 'group.html', context)
 
+def chat_main_page(request):
+    groups = Group.objects.all()
+    context = {
+        'groups': groups,
+    }
+    return render(request, 'chat_main_page.html', context)
+
 # @login_required
 # def send_message(request):
 #     if request.method == 'POST':
