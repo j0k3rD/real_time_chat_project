@@ -1,16 +1,24 @@
-# Create your views here.
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.http import JsonResponse
+from chat.models import Message, Group
+from django.template.loader import get_template
+from django.template import Context
+from django.http import HttpResponse
 
-# from django.shortcuts import render, redirect
-# from django.contrib.auth.decorators import login_required
-# from django.contrib import messages
-# from django.http import JsonResponse
-# from models import Message, Group
 
 # @login_required
-# def group_chat(request, group_id):
-#     group = Group.objects.get(id=group_id)
-#     messages = Message.objects.filter(group=group).order_by('timestamp')
-#     return render(request, 'group.html', {'group': group, 'messages': messages})
+def group_chat(request, group_id):
+    group = Group.objects.get(id=group_id)
+    messages = Message.objects.filter(group=group).order_by('date')
+
+    context = {
+        'group': group,
+        'messages': messages,
+    }
+
+    return render(request, 'group.html', context)
 
 # @login_required
 # def send_message(request):

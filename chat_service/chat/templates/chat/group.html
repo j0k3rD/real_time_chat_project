@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="/chat_project/real_time_chat_project/chat_service/chat/static/style/styles.css">
+    <!-- <link rel="stylesheet" href="/chat_project/real_time_chat_project/chat_service/chat/static/style/styles.css"> -->
     <title>Chat</title>
 </head>
 <body>
@@ -14,7 +14,7 @@
             <nav class="navbar navbar-light bg-light">
                 <div class="container-fluid">
                   <a class="navbar-brand" href="#">
-                    <img src="/chat_project/real_time_chat_project/chat_service/chat/static/img/live-chat-logo.png" alt="" width="80" height="60" class="d-inline-block align-text-center">
+                    <!-- <img src="/real_time_chat_project/chat_service/chat/static/img/live-chat-logo.png" alt="" width="80" height="60" class="d-inline-block align-text-center"> -->
                     Real time chat
                   </a>
                 </div>
@@ -22,19 +22,36 @@
         </header>
     </div>
 
+    <h2>Group Name: {{ group.id }}</h2>
+    <!-- <h2>sisi</h2> -->
     <section class="message_box">
       <div class="mb-3 justify-content-center">
         <label for="exampleFormControlTextarea1" class="form-label"></label>
-        <textarea class="form-control chat_box" id="exampleFormControlTextarea1" rows="3"></textarea>
+
+        <textarea class="form-control chat_box" id="chat-log" rows="3">
+          {% for chat in chats %}
+              {{ chat.message.message }}
+          {% empty %}
+              No chats yet.
+          {% endfor %}
+        </textarea><br>
+
+        {{group.id|json_script:"group-id"}}
+
       </div>
+
+
       <div class="d-flex">
-        <form action="POST">
-          <textarea form="form_message" id="form_message" cols="30" rows="1" class="message_box" name="form_message"></textarea>
+        <form id="chat-form" name="chat-form">
+          <div class="mb-3">
+            <label for="form_message" class="form-label"></label>
+            <input type="text" class="form-control" id="form_message" placeholder="Enter your message">
+          </div>
+        <button id="chat-message-submit" type="submit" class="btn btn-primary subm_button">Send</button>
         </form>
       </div>
-      <div>
-        <button type="submit" class="btn btn-primary subm_button">Send</button>
-      </div>
+
+
     </section>
 
     <!-- <footer class="footer mt-auto py-3">
@@ -42,6 +59,56 @@
     </footer> -->
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-</body>
+
+    <script>  
+
+      // Obtener el nombre del grupo por medio del id
+            const groupID = JSON.parse(document.getElementById('group-id').textContent)
+      console.log(groupID)
+
+      // Conectar al grupo
+      var ws = new WebSocket(
+          'ws://' 
+          + window.location.host 
+          + '/ws/chat/group/'
+          + groupID
+          + '/')
+
+      // Conectar al grupo
+      ws.onopen = function(e) {   
+          console.log('Connection established')
+      }
+      
+      // Recibir datos del chat
+      ws.onmessage = function(e) {
+          const data = JSON.parse(e.data)
+          console.log(data)
+          document.getElementById('chat-log').innerHTML += (data.message + '\n')
+      } 
+
+      // Desconectar del grupo
+      ws.onclose = function(e) {
+          console.log('Connection closed')
+      }
+
+      // Enviar datos del chat
+      document.getElementById('chat-form').onsubmit = function(e) {
+          e.preventDefault()
+          const message = document.getElementById('form_message').value
+          
+          if (message=='') {
+            alert('Please Enter a Message.')
+            return
+          }
+          
+          ws.send(JSON.stringify({
+              'message': message
+          }))
+      }
+
+
+    </script>
+
+  </body>
 </html>
 

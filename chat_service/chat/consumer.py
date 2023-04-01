@@ -1,6 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-# from .models import Chat, Group #!Falta crear Modelos
+from .models import Message, Group
 from channels.db import database_sync_to_async
 
 
@@ -12,15 +12,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
         - AsyncWebsocketConsumer: Clase que hereda de la clase AsyncWebsocketConsumer
     '''
 
-    async def connect(self):
+    async def connect(self):    
         '''
         Metodo que se ejecuta cuando el cliente se conecta al servidor
         '''
         print('WEBSOCKET CONNECTED...')
         print("CHANNEL LAYER...", self.channel_layer)
         print("CHANNEL NAME...", self.channel_name)
-        self.group_name = self.scope['url_route']['kwargs']['groupkaname']
-        print('GROUP NAME...', self.group_name)
+        # Traemos el id del grupo para sacar el nombre del grupo
+        self.group_id = self.scope['url_route']['kwargs']['groupkid']
+        self.group_name = 'chat_%s' % self.group_id
+        print('GROUP ID...', self.group_id)
         await self.channel_layer.group_add(
             self.group_name,
             self.channel_name
@@ -52,12 +54,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
         print('RECEIVE', text_data)
         data = json.loads(text_data)
         message = data['message']
-        group = await database_sync_to_async(Group.objects.get)(name=self.group_name)
+        group = await database_sync_to_async(Group.objects.get)(id=self.group_id)
 
         if self.scope['user'].is_authenticated: #TODO: Verificar despues con token
+            print(message)
+            print(self.scope['user'].id)
+            print(self.scope['user'].username)
+            print(group)
             if message != '':
-                chat = Chat(
-                    content = data['message']
+                chat = Message(
+                    message=message,
+                    user_id=self.scope['user'].id,
+                    username=self.scope['user'].username,
                     group=group
                 )
                 await database_sync_to_async(chat.save)()
