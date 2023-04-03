@@ -6,8 +6,8 @@ from django.contrib.auth.views import LoginView
 
 # Create your views here.
 
-def login(request):
-    return render(request, 'login.html')
+# def login(request):
+#     return render(request, 'login.html')
 
 def user_login(request):
     if request.method == 'POST':

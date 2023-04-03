@@ -180,3 +180,8 @@ cursor: pointer;
 .d-flex {
     flex-wrap: wrap;
 }
+
+form input[type="hidden"] {
+    padding: 10px;
+    border: solid 1px #ff0000;
+}

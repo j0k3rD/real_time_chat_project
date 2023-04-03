@@ -25,7 +25,9 @@
         <br>
         <div class="d-flex justify-content-center login_box">
             <form method="POST" action=>
-                <div class="links">
+                {% csrf_token %}    
+                {{ form.as_p }}
+                <!-- <div class="links">
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Email address</label>
                         <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
@@ -39,8 +41,8 @@
                         <input type="checkbox" class="form-check-input" id="exampleCheck1">
                         <label class="form-check-label" for="exampleCheck1">Check me out</label>
                     </div>
+                </div> -->
                 <button type="submit" class="btn btn-primary">Log in</button>
-                </div>
             </form>
         </div>
     <footer class="footer mt-auto py-3">
