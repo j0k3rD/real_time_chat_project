@@ -20,6 +20,7 @@ def group_chat(request, group_id):
 
     return render(request, 'group.html', context)
 
+# @login_required
 def chat_main_page(request):
     groups = Group.objects.all()
     context = {
