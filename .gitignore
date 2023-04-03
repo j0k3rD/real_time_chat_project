@@ -2,3 +2,4 @@
 _data
 virtual/*
 env_file
+__pycache__/*
