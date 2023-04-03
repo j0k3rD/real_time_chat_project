@@ -24,15 +24,6 @@ root{
     width: 50%; */
 
 }
-
-.column {
-    flex: 1 0 auto; /* establece la flexibilidad en 1, la base de flexibilidad en 0 y la altura automática */
-    margin-right: 10px; / añade un margen a la derecha de cada columna para separarlas /
-  }
-  
-  .column:last-child {
-    margin-right: 0; /* elimina el margen derecho de la última columna */
-  }
   
 .chat-img {
     width: 100px;
