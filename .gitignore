@@ -2,4 +2,9 @@
 _data
 virtual/*
 env_file
-__pycache__/*
+chat_service/chat/__pycache__/*
+chat_service/chat_service/__pycache__/*
+chat_service/tests/__pycache__/*
+user_service/user/__pycache__/*
+user_service/user_service/__pycache__/*
+user_service/tests/__pycache__/*
