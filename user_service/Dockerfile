@@ -15,9 +15,10 @@ RUN apt-get update
 
 #! AGREGAR AQUI LAS DEPENDENCIAS REDIS??
 RUN apt-get install -y curl gcc g++ libffi-dev libssl-dev build-essential default-mysql-client python3-mysqldb libmariadb-dev
-
+RUN apt-get install -y inetutils-ping
 RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 RUN rm -rf /var/lib/apt/lists/*
+
 
 USER djangoapp
 RUN mkdir app
