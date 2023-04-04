@@ -22,18 +22,19 @@ RUN rm -rf /var/lib/apt/lists/*
 USER djangoapp
 RUN mkdir app
 #copia la carpeta del proyecto a la imagen
-COPY ./chat ./chat
-COPY ./chat_service ./chat_service
-COPY ./manage.py .
+COPY ./chat_service /home/djangoapp/chat_service
+COPY ./chat /home/djangoapp/chat
+COPY ./manage.py /home/djangoapp/
+
 
 # TODO: cambiar por requirements_production.txt
-ADD requirements_production.txt ./requirements.txt
+ADD requirements_prod.txt ./requirements.txt
 
 RUN pip install --no-cache-dir -r requirements.txt
 # RUN pip install gevent gunicorn==20.1.0
 
 #puerto por el que escucha la imagen
-EXPOSE 10000
+EXPOSE 7000
 
 #HEALTHCHECK --interval=10s --timeout=10s --start-period=55s 
 #CMD curl -f --retry 10 --max-time 15 --retry-delay 10 --retry-max-time 60 "http://localhost:5000/api/v1/health" || exit 1   
