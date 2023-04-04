@@ -14,11 +14,13 @@ def group_chat(request, group_id):
     group = Group.objects.get(id=group_id)
     messages = Message.objects.filter(group=group).order_by('date')
     logo_path = config('LOGO_PATH')
-
+    style_path = config('STYLES_PATH')
+    
     context = {
         'group': group,
         'messages': messages,
         'logo_path': logo_path,
+        'style_path': style_path,
     }
 
     return render(request, 'group.html', context)
@@ -27,9 +29,11 @@ def group_chat(request, group_id):
 def chat_main_page(request):
     groups = Group.objects.all()
     logo_path = config('LOGO_PATH')
+    style_path = config('STYLES_PATH')
     context = {
         'groups': groups,
         'logo_path': logo_path,
+        'style_path': style_path,
     }
     return render(request, 'chat_main_page.html', context)
 
