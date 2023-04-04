@@ -14,7 +14,7 @@ services:
             - env_file
         volumes:
             - ./_data:/var/lib/mysql
-        restart: always
+        # restart: always
 networks:
     red:
       external: true
