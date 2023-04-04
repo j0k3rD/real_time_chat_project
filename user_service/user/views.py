@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
 # from ...chat_service.chat.views import chat_main_page
+from decouple import config
 
 # Create your views here.
 
@@ -11,6 +12,8 @@ from django.contrib.auth.views import LoginView
 #     return render(request, 'login.html')
 
 def user_login(request):
+    static_path = config('STATIC_PATH')
+    style_path = config('STYLES_PATH')
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
         if form.is_valid():

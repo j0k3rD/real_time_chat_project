@@ -13,13 +13,13 @@ from decouple import config
 def group_chat(request, group_id):
     group = Group.objects.get(id=group_id)
     messages = Message.objects.filter(group=group).order_by('date')
-    logo_path = config('LOGO_PATH')
+    static_path = config('STATIC_PATH')
     style_path = config('STYLES_PATH')
     
     context = {
         'group': group,
         'messages': messages,
-        'logo_path': logo_path,
+        'static_path': static_path,
         'style_path': style_path,
     }
 
@@ -28,11 +28,11 @@ def group_chat(request, group_id):
 # @login_required
 def chat_main_page(request):
     groups = Group.objects.all()
-    logo_path = config('LOGO_PATH')
+    static_path = config('STATIC_PATH')
     style_path = config('STYLES_PATH')
     context = {
         'groups': groups,
-        'logo_path': logo_path,
+        'static_path': static_path,
         'style_path': style_path,
     }
     return render(request, 'chat_main_page.html', context)
