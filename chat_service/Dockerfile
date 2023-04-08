@@ -38,7 +38,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 7000
 
 #HEALTHCHECK --interval=10s --timeout=10s --start-period=55s 
-#CMD curl -f --retry 10 --max-time 15 --retry-delay 10 --retry-max-time 60 "http://localhost:5000/api/v1/health" || exit 1   
+#CMD curl -f --retry 10 -- max-time 15 --retry-delay 10 --retry-max-time 60 "http://localhost:5000/api/v1/health" || exit 1   
 
 #ejecuta la aplicación
 #CMD ["gunicorn", "--workers", "1", "--log-level", "INFO", "--bind", "0.0.0.0:5000", "app:create_app()"]

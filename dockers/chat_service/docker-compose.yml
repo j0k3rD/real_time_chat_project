@@ -7,10 +7,10 @@ services:
         networks:
             - red
         ports:
-            - "20000:20000"
+            - "7000:7000"
         env_file:
             - env_file
-        # restart: always
+        restart: always
 networks:
     red:
       external: true

@@ -34,7 +34,7 @@ SECRET_KEY = config('SECRET_KEY')
 # DEBUG = os.getenv('DEBUG')
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 
 # Application definition
