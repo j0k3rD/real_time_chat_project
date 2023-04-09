@@ -22,8 +22,8 @@ def user_login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                #return HttpResponse("¡Bienvenido de nuevo, {}!".format(user.username))
-                return redirect('http://127.0.0.1:7000/menu')
+                return HttpResponse("¡Bienvenido de nuevo, {}!".format(user.username))
+                # return redirect('http://127.0.0.1:7000/menu')
             else:
                 return HttpResponse("Nombre de usuario o contraseña incorrectos.")
     else:

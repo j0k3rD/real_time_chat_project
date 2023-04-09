@@ -63,7 +63,7 @@ ROOT_URLCONF = 'user_service.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR_2 / 'chat_service/chat/templates/user'],
+        'DIRS': [BASE_DIR_2 / 'user_service/user/templates/user'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
