@@ -11,6 +11,13 @@ services:
         env_file:
             - env_file
         restart: always
+
+        # healthcheck:
+        #   test: curl --fail http://0.0.0.0:7000/ || curl --fail http://172.18.0.1:30000/ || curl --fail http://172.18.0.1:6378/ || exit 1
+        #   interval: 40s
+        #   timeout: 30s
+        #   retries: 3
+        #   start_period: 60s
 networks:
     red:
       external: true

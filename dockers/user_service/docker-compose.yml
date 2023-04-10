@@ -11,6 +11,6 @@ services:
         env_file:
             - env_file
         restart: always
-networks:
+networks:   
     red:
       external: true
