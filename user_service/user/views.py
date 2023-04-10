@@ -14,10 +14,7 @@ def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print(username, password)
         user = User.objects.get(username=username)
-        print(user)
-        print(user.username, user.password)
         if user is not None:
             print("user is not None")
             if user.password == password:
