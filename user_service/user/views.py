@@ -3,27 +3,25 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
-# from ...chat_service.chat.views import chat_main_page
+from user.models import User
 from decouple import config
 
 # Create your views here.
-
-# def login(request):
-#     return render(request, 'login.html')
 
 def user_login(request):
     static_path = config('STATIC_PATH')
     style_path = config('STYLES_PATH')
     if request.method == 'POST':
-        form = AuthenticationForm(request, request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                #return HttpResponse("¡Bienvenido de nuevo, {}!".format(user.username))
-                return redirect('http://127.0.0.1:7000/menu')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        print(username, password)
+        user = User.objects.get(username=username)
+        print(user)
+        print(user.username, user.password)
+        if user is not None:
+            print("user is not None")
+            if user.password == password:
+                return redirect(config('CHAT_URL'))
             else:
                 return HttpResponse("Nombre de usuario o contraseña incorrectos.")
     else:
