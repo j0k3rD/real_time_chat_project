@@ -6,21 +6,17 @@ from chat.models import Message, Group
 from django.template.loader import get_template
 from django.template import Context
 from django.http import HttpResponse
-from decouple import config
 
 
 # @login_required
 def group_chat(request, group_id):
     group = Group.objects.get(id=group_id)
     messages = Message.objects.filter(group=group).order_by('date')
-    static_path = config('STATIC_PATH')
-    style_path = config('STYLES_PATH')
+
     
     context = {
         'group': group,
         'messages': messages,
-        'static_path': static_path,
-        'style_path': style_path,
     }
 
     return render(request, 'group.html', context)
@@ -28,12 +24,8 @@ def group_chat(request, group_id):
 # @login_required
 def chat_main_page(request):
     groups = Group.objects.all()
-    static_path = config('STATIC_PATH')
-    style_path = config('STYLES_PATH')
     context = {
         'groups': groups,
-        'static_path': static_path,
-        'style_path': style_path,
     }
     return render(request, 'chat_main_page.html', context)
 
