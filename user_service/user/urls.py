@@ -16,9 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from .views import user_login, health_check, register
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('login/', user_login, name='login'),
     path('health_check/', health_check, name='health_check'),
     path('register/', register, name='register')
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
