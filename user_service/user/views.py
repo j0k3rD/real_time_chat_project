@@ -64,3 +64,20 @@ def health_check(request):
         return JsonResponse(data, status=200)
     else:
         return JsonResponse(data, status=500)
+    
+# Vista para registrar usuarios en la pagina
+def register(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        # Verifico que no esten vacios
+        if username and email and password:
+            user = User.objects.create_user(username, email)
+            user.set_password(password)
+            user.save()
+            return redirect('127.0.0.1:7000/login/')
+        else:
+            return render(request, 'register.html', {'error': 'Todos los campos son obligatorios.'})
+    else:
+        return render(request, 'register.html')
