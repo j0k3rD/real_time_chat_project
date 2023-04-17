@@ -1,16 +1,23 @@
 version: '3.3'
 services:
     userservice:
-        container_name: userservice
-        image: userservice:v0.1.0
+        # container_name: userservice
+        image: userservice:v0.2.0
 
         networks:
             - red
-        ports:
-            - "9000:9000"
+        # ports:
+            # - "9000:9000"
         env_file:
-            - env_file
+            - .env
         restart: always
+
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.userservice.rule=Host(`${NAME}.localhost`)"
+            - "traefik.http.services.userservice.loadbalancer.server.port=9000"
+            - "traefik.http.routers.userservice.tls=true"
+
 networks:   
     red:
       external: true

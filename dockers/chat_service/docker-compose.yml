@@ -1,16 +1,22 @@
 version: '3.3'
 services:
     chatservice:
-        container_name: chatservice
-        image: chatservice:v0.1.0
+        # container_name: chatservice
+        image: chatservice:v0.2.0
 
         networks:
             - red
-        ports:
-            - "7000:7000"
+        # ports:
+            # - "7000:7000"
         env_file:
-            - env_file
+            - .env
         restart: always
+
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.chatservice.rule=Host(`${NAME}.localhost`)"
+            - "traefik.http.services.chatservice.loadbalancer.server.port=7000"
+            - "traefik.http.routers.chatservice.tls=true"
 
         # healthcheck:
         #   test: curl --fail http://0.0.0.0:7000/ || curl --fail http://172.18.0.1:30000/ || curl --fail http://172.18.0.1:6378/ || exit 1

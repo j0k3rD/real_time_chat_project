@@ -1,19 +1,26 @@
 version: '3.3'
 services:
     mysql:
-        container_name: mysqlserver
+        # container_name: mysqlserver
         image: mysql:8.0-debian
 
         command: --default-authentication-plugin=mysql_native_password
 
         networks:
             - red
-        ports:
-            - "30000:3306"
+        # ports:
+            # - "30000:3306"
         env_file:
-            - env_file
+            - .env
         volumes:
             - ./_data:/var/lib/mysql
+
+        labels:
+            - "traefik.enable=true"
+            - "traefik.tcp.routers.mysql.rule=HostSNI(`*`)"
+            - "traefik.tcp.services.mysql.loadbalancer.server.port=3306"
+            - "traefik.tcp.routers.mysql.entrypoints=mysql"
+
         restart: always
 networks:
     red:
