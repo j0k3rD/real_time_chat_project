@@ -18,11 +18,11 @@ from django.urls import path
 from .views import user_login, health_check, register
 from django.conf import settings
 from django.conf.urls.static import static
-from rest_framework_simplejwt import views as jwt_views
+# from rest_framework_simplejwt import views as jwt_views
 
 urlpatterns = [
     path('login/', user_login, name='login'),
     path('health_check/', health_check, name='health_check'),
     path('register/', register, name='register'),
-    path('api/token/',jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair')
+    # path('api/token/',jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair')
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
