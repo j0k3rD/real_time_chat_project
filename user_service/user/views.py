@@ -14,6 +14,7 @@ from django.contrib.auth.hashers import make_password, check_password
 
 def user_login(request):
     user_url = config('USER_URL')
+    chat_url = config('CHAT_URL')
     if request.method == 'POST':
         # username = request.POST.get('username')
         email = request.POST.get('email')
@@ -24,7 +25,8 @@ def user_login(request):
         print("Esto es passw: ", password)
         if user is not None:
             if checkpassword:
-                return redirect(config('CHAT_URL') + "/menu/", {'user_url': user_url})
+                print(chat_url)
+                return redirect(chat_url + "/menu/", {'user_url': user_url})
             else:
                 return HttpResponse("Nombre de usuario o contraseña incorrectos.")
     else:
