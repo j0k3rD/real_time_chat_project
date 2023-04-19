@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'rest_framework',
-    # 'rest_framework_simplejwt'
+    'rest_framework',
+    'rest_framework_simplejwt'
 ]
 
 MIDDLEWARE = [
@@ -119,15 +119,6 @@ AUTH_PASSWORD_VALIDATORS = [
 #     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=30),
 #     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
 # }
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ]
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

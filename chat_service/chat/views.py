@@ -1,36 +1,46 @@
 import redis
 import mysql.connector
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from django.shortcuts import render
 from django.http import JsonResponse
 from chat.models import Message, Group
-from django.template.loader import get_template
-from django.template import Context
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from decouple import config
-    
 
-def group_chat(request, group_id):
-    group = Group.objects.get(id=group_id)
-    messages = Message.objects.filter(group=group).order_by('date')
 
-    
-    context = {
-        'group': group,
-        'messages': messages,
-    }
+def get_main_page(request):
+    user_url = config('USER_URL')
+    access_token = get_access(request)
+    if access_token is not None:
+        groups = Group.objects.all()
+        context = {
+            'groups': groups,
+        }
+        return render(request, 'chat_main_page.html', context)
+        # return HttpResponse("Esto es el menu")
+    else:
+        return HttpResponseRedirect(user_url + "/login/")
 
-    return render(request, 'group.html', context)
+def get_group(request, group_id):
+    user_url = config('USER_URL')
+    access_token = get_access(request)
+    if access_token is not None:
+        group = Group.objects.get(id=group_id)
+        messages = Message.objects.filter(group=group).order_by('date')
 
-# @login_required
-def chat_main_page(request):
-    groups = Group.objects.all()
-    context = {
-        'groups': groups,
-    }
-    return render(request, 'chat_main_page.html', context)
+        
+        context = {
+            'group': group,
+            'messages': messages,
+        }
+
+        return render(request, 'group.html', context)
+    else:
+        return HttpResponseRedirect(user_url + "/login/")
+
+def get_access(request):
+    access_token = request.COOKIES.get('access_token')
+    return access_token
 
 
 def health_check(request):

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
@@ -9,24 +9,36 @@ import redis, mysql
 from django.http import JsonResponse
 from user.models import User
 from django.contrib.auth.hashers import make_password, check_password
+import requests as r
 
 # Create your views here.
+
+def get_token(chat_url):
+    params = {"username": config('USERNAME_DATA'), "password": config('PASSW_DATA')}
+    params_response = r.post(chat_url + "/api/token/", data=params)
+    print("Esto es la response: ", params_response.json())
+    return params_response.json()
 
 def user_login(request):
     user_url = config('USER_URL')
     chat_url = config('CHAT_URL')
     if request.method == 'POST':
-        # username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        # user = User.objects.get(username=username)
         user = User.objects.get(email=email)
         checkpassword = check_password(password, user.password)
         print("Esto es passw: ", password)
         if user is not None:
             if checkpassword:
-                print(chat_url)
-                return redirect(chat_url + "/menu/", {'user_url': user_url})
+                token = get_token(chat_url)
+                headersAuth = {
+                    "AUTHORIZATION": "Bearer " + str(token["access"])
+                }
+                print("Esto es el token: ", headersAuth)
+                response = HttpResponseRedirect(chat_url + "/menu/", {'user_url': user_url}, headers=headersAuth)
+                response.set_cookie('access_token', token['access'])
+                # return redirect(response.url)
+                return response
             else:
                 return HttpResponse("Nombre de usuario o contraseña incorrectos.")
     else:

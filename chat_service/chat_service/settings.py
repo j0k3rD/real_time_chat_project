@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'channels',
+    'rest_framework',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -133,10 +135,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Configuración de SimpleJWT
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=30),
-    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
+# # Configuración de SimpleJWT
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=30),
+#     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
+# }
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
 }
 
 # Internationalization
