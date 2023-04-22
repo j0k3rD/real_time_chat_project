@@ -16,6 +16,7 @@ Chat -- get/set chat --> db2
 Login -- get user --> db1
 Admin -- set user ---> db1
 Admin -- get/set chat ----> db2
+```
 
 -- El usuario solo puedo escribir en el chat una ves logueado en el sistema.
 - El admin es el encargado de generar los usuarios y administrar las base de datos mediante la interfaz de admin de **Django**.
