@@ -1,7 +1,7 @@
 http:
   routers:
     traefik:
-      rule: "Host(`traefik.chat.localhost`)" #* 'chat' es el nombre de subdominio que se le asigna a la red
+      rule: "Host(`traefik.chat.localhost`)"
       service: "api@internal"
       tls:
         domains:

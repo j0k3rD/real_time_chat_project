@@ -42,4 +42,5 @@ EXPOSE 7000
 
 #ejecuta la aplicación
 #CMD ["gunicorn", "--workers", "1", "--log-level", "INFO", "--bind", "0.0.0.0:5000", "app:create_app()"]
+# RUN python3 manage.py migrate
 CMD [ "python3", "manage.py", "runserver", "0.0.0.0:7000" ]

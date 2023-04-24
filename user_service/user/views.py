@@ -47,19 +47,8 @@ def user_login(request):
 
 def health_check(request):
     '''
-    Función que chequea el estado de la base de datos y el servidor de redis
+    Función que chequea el estado de la db MySQL
     '''
-    #Checkemos el Redis
-    redis_host = config('REDIS_HOST')
-    redis_port = config('REDIS_PORT')
-
-    try:
-        r = redis.Redis(host=redis_host, port=redis_port, socket_connect_timeout=1, socket_timeout=1)
-        r.ping()
-        redis_status = 200
-    except redis.exceptions.ConnectionError:
-        redis_status = 500
-
     #Checkemos MySQL
     mysql_host = config('DATABASE_HOST')
     mysql_port = config('DATABASE_PORT')
@@ -74,7 +63,6 @@ def health_check(request):
         mysql_status = 500
     
     data = {
-        'redis': redis_status,
         'mysql': mysql_status,
     }
     

@@ -5,11 +5,10 @@ services:
         image: mysql:8.0-debian
 
         command: --default-authentication-plugin=mysql_native_password
-
+        # ports:
+            # - 30000:3306
         networks:
             - red
-        # ports:
-            # - "30000:3306"
         env_file:
             - .env
         volumes:
@@ -20,8 +19,8 @@ services:
             - "traefik.tcp.routers.mysql.rule=HostSNI(`*`)"
             - "traefik.tcp.services.mysql.loadbalancer.server.port=3306"
             - "traefik.tcp.routers.mysql.entrypoints=mysql"
-
         restart: always
+
 networks:
     red:
       external: true
