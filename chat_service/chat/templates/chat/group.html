@@ -84,19 +84,19 @@
           + '/'
           )
       // Conectar al grupo
-      ws.onopen = function(e) {   
+      wss.onopen = function(e) {   
           console.log('Connection established')
       }
       
       // Recibir datos del chat
-      ws.onmessage = function(e) {
+      wss.onmessage = function(e) {
           const data = JSON.parse(e.data)
           console.log(data)
           document.getElementById('chat-log').innerHTML += (data.message + '\n')
       } 
 
       // Desconectar del grupo
-      ws.onclose = function(e) {
+      wss.onclose = function(e) {
           console.log('Connection closed')
       }
 
@@ -110,12 +110,10 @@
             return
           }
           
-          ws.send(JSON.stringify({
+          wss.send(JSON.stringify({
               'message': message
           }))
       }
-
-
     </script>
 
   </body>
