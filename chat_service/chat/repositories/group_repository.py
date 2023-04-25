@@ -4,7 +4,7 @@ from .repository import Create, Delete, Read, Update
 from ..models import Group as GroupModel
 
 # TODO: Implementar delete en caso de agregar administrador para eliminar cursos.
-class GroupRepository(Create, Read, Update):
+class GroupRepository(Read):
     '''
     Clase que representa el repositorio de la entidad Group
     param:
@@ -19,10 +19,13 @@ class GroupRepository(Create, Read, Update):
     def type_model(self):
         return self.__type_model
     
-    def create(self):
-
-    def update(self):
+    # def create(self, name):
+    #     group = GroupModel.objects.create()
+    #     group.name = name
+    #     group.save()
 
     def find_all(self):
+        return GroupModel.objects.all()
 
-    def find_by_id(self):
+    def find_by_id(self, id):
+        return GroupModel.objects.get(id=id)

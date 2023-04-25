@@ -7,7 +7,7 @@ from chat.models import Message, Group
 from django.http import HttpResponse, HttpResponseRedirect
 from decouple import config
 
-
+#!APLICAR SERVICIOS
 def get_main_page(request):
     user_url = config('USER_URL')
     access_token = get_access(request)
@@ -42,7 +42,7 @@ def get_access(request):
     access_token = request.COOKIES.get('access_token')
     return access_token
 
-
+#! PREGUNTA: Hay que llevarlo a un servicio?
 def health_check(request):
     '''
     Función que chequea el estado de la base de datos y el servidor de redis

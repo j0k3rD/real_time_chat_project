@@ -26,6 +26,7 @@ def user_login(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         user = User.objects.get(email=email)
+        #! Este chequeo va aca o en el servicio?
         checkpassword = check_password(password, user.password)
         print("Esto es passw: ", password)
         if user is not None:

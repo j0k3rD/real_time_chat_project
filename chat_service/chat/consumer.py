@@ -3,7 +3,7 @@ import json
 from .models import Message, Group
 from channels.db import database_sync_to_async
 
-
+#! APLICAR PATRON REPOSITORIO 
 class ChatConsumer(AsyncWebsocketConsumer):
     '''
     Clase que se encarga de la comunicacion entre el cliente y el servidor del Chat
