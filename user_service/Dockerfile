@@ -26,7 +26,7 @@ RUN mkdir app
 COPY ./user_service /home/djangoapp/user_service
 COPY ./user /home/djangoapp/user
 COPY ./manage.py /home/djangoapp/
-
+COPY ./entrypoint.sh /entrypoint.sh
 
 # TODO: cambiar por requirements_production.txt
 ADD requirements_prod.txt ./requirements.txt
@@ -42,4 +42,7 @@ EXPOSE 9000
 
 #ejecuta la aplicación
 #CMD ["gunicorn", "--workers", "1", "--log-level", "INFO", "--bind", "0.0.0.0:5000", "app:create_app()"]
-CMD [ "python3", "manage.py", "runserver", "0.0.0.0:9000" ]
+
+#CMD ["python3", "manage.py", "runserver", "0.0.0.0:9000"]
+
+CMD ["/entrypoint.sh"]
