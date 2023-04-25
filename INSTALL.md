@@ -293,7 +293,7 @@ Y con eso ya deberiamos tener el **userservice** funcionando correctamente en nu
 
 > docker ps 
 
-y verificar si la imagen **user_service** esta corriendo, junto a **traefik, mysql y redis**
+y verificar si la imagen **user_service** esta corriendo, junto a **chatservice, traefik, mysql y redis**
 
 ## Probar servicios y configurar grupos
 
