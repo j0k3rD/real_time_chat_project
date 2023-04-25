@@ -37,39 +37,33 @@ entryPoints:
     address: ":3306"
 
   # Agrega la entrada para WebSocket
-  ws:
+  wss:
     address: ":7000"
 
-  web:
-    address: ":8000"
+# http:
+#   # Agrega el middleware para WebSocket
+#   middlewares:
+#     websocket:
+#       headers:
+#         connectionUpgrade:
+#           value: "websocket"
+#         upgrade:
+#           value: "websocket"
 
-  websecure:
-    address: ":8443"
+  # # Agrega la definición del router para WebSocket
+  # routers:
+  #   websocket:
+  #     entryPoints:
+  #       - ws
+  #     rule: "PathPrefix(`/ws`)"
+  #     service: websocket-service
+  #     middlewares:
+  #       - websocket
 
-http:
-  # Agrega el middleware para WebSocket
-  middlewares:
-    websocket:
-      headers:
-        connectionUpgrade:
-          value: "websocket"
-        upgrade:
-          value: "websocket"
-
-  # Agrega la definición del router para WebSocket
-  routers:
-    websocket:
-      entryPoints:
-        - ws
-      rule: "PathPrefix(`/ws`)"
-      service: websocket-service
-      middlewares:
-        - websocket
-
-  # Agrega la definición del servicio para WebSocket
-  services:
-    websocket-service:
-      loadBalancer:
-        passHostHeader: true
-        servers:
-          - url: "chat.chat.localhost"
+  # # Agrega la definición del servicio para WebSocket
+  # services:
+  #   websocket-service:
+  #     loadBalancer:
+  #       passHostHeader: true
+  #       servers:
+  #         - url: "chat.chat.localhost"

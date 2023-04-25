@@ -24,19 +24,19 @@ def get_main_page(request):
 def get_group(request, group_id):
     user_url = config('USER_URL')
     access_token = get_access(request)
-    if access_token is not None:
-        group = Group.objects.get(id=group_id)
-        messages = Message.objects.filter(group=group).order_by('date')
+    # if access_token is not None:
+    group = Group.objects.get(id=group_id)
+    messages = Message.objects.filter(group=group).order_by('date')
 
-        
-        context = {
-            'group': group,
-            'messages': messages,
-        }
+    
+    context = {
+        'group': group,
+        'messages': messages,
+    }
 
-        return render(request, 'group.html', context)
-    else:
-        return HttpResponseRedirect(user_url + "/login/")
+    return render(request, 'group.html', context)
+    #else:
+    #    return HttpResponseRedirect(user_url + "/login/")
 
 def get_access(request):
     access_token = request.COOKIES.get('access_token')

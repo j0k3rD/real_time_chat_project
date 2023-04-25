@@ -2,7 +2,7 @@ version: '3.3'
 services:
     userservice:
         # container_name: userservice
-        image: userservice:v0.3.0
+        image: userservice:v0.4.0
 
         networks:
             - red
@@ -16,6 +16,7 @@ services:
             - "traefik.enable=true"
             - "traefik.http.routers.userservice.rule=Host(`${NAME}.localhost`)"
             - "traefik.http.services.userservice.loadbalancer.server.port=9000"
+            # - "traefik.http.routers.chatservice.entrypoints=http,https,mysql"
             - "traefik.http.routers.userservice.tls=true"
 
 networks:   

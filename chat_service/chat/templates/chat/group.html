@@ -68,13 +68,21 @@
       console.log(groupID)
 
       // Conectar al grupo
-      var ws = new WebSocket(
-          'ws://' 
-          + window.location.host 
-          + '/ws/chat/group/'
+      var wss = new WebSocket(
+        'wss://' 
+          + window.location.host
+          // + ':7000'
+          + '/wss/chat/group/'
           + groupID
           + '/')
 
+          console.log(
+            'wss://' 
+          + window.location.host 
+          + '/wss/chat/group/'
+          + groupID
+          + '/'
+          )
       // Conectar al grupo
       ws.onopen = function(e) {   
           console.log('Connection established')

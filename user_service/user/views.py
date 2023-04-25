@@ -15,7 +15,7 @@ import requests as r
 
 def get_token(chat_url):
     params = {"username": config('USERNAME_DATA'), "password": config('PASSW_DATA')}
-    params_response = r.post(chat_url + "/api/token/", data=params)
+    params_response = r.post(chat_url + "api/token/", data=params)
     print("Esto es la response: ", params_response.json())
     return params_response.json()
 
