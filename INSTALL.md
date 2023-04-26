@@ -1,4 +1,3 @@
-
 # Instalación del servicio para chat y usuario
 
 Primero debes clonar o descargar el [repositorio](https://github.com/j0k3rD/real_time_chat_project)
@@ -10,6 +9,16 @@ Primero debes clonar o descargar el [repositorio](https://github.com/j0k3rD/real
 Este proyecto funciona con python, por lo que hay que descargar e instalar [Python](https://www.python.org/downloads/) en tu sistema operativo.
 
 Y ademas deben instalar [Docker](https://docs.docker.com/get-docker/), para el manejo de microservicios.
+
+## Crear red de docker
+
+Vamos a crear una red llamada "red" para conectar todos los contenedores entre sí.
+
+> docker network create red
+
+Para verificar si la red fue creada correctamente, verificar con:
+
+> docker network ls
 
 ## Instalar en Docker los contenedores para Mysql, Redis y Traefik
 
@@ -39,7 +48,7 @@ Y dejar runeando las tres imagenes con docker compose, que se encuentra dentro d
 
 ## Chat Service
 
-### Configurar variables locales (dotenv) y configurar la base de datos:
+### Configurar variables locales (dotenv) y configurar la base de datos (Necesario para crear superuser en Django y testeo local):
 
 Primero debemos configurar la base de datos y crear los modelos necesarios para funcionar con el **chat_service**, por lo que nos vamos a la carpeta **/chat_service/chat_service**, luego duplicamos y cambiamos el nombre de **env-example** a **env** y cambiar los valores dentro por los siguientes:
 
@@ -54,12 +63,13 @@ DATABASE_NAME  =  'chat_real_time'
 DATABASE_USER  =  ''
 # Contraseña de usuario secundario de mysql.
 DATABASE_PASSWORD  =  ''
-# IP de mysql corriendo en docker, utilizando el comando "docker ps" o "docker port mysql".
+# IP de mysql corriendo en docker, se puede obtener con el siguiente comando
+(docker network inspect red --format='{{json .Containers}}' | jq -r '.[] | .Name + " " + .IPv4Address').
 DATABASE_HOST  =  'xxx.xxx.xxx.xxx'
 DATABASE_PORT  =  '3306'
 
 # REDIS CONFIGURATION
-# IP de redis corriendo en docker, utilizando el comando "docker ps" o "docker port redis".
+# IP de redis corriendo en docker.
 REDIS_HOST  =  'xxx.xxx.xxx.xxx'
 REDIS_PORT  =  '6378'
 
@@ -73,10 +83,6 @@ CHAT_URL  =  'chat.chat.localhost'
 # USER MICROSERVICE CONFIGURATION
 USER_URL  =  'user.chat.localhost'
 ```
-
-Una ves configurado el **.env** del **chat_service/chat_service**, procedemos a ir a la carpeta **/char_service** y abrimos una terminal y escribimos el siguiente comando para actualizar la base de datos del servicio de **mysql**, tener en cuenta que el servicio tiene que estar corriendo en Docker, con un **docker ps**:
-
-> python3 manage.py migrate
 
 y luego crear un admin para django con el siguiente comando (recordar los datos ingresados, tanto de nombre de **admin** y de **contraseña**, porque se usara mas adelante al cambiar el **.env** de **UserService**):
 
@@ -119,11 +125,11 @@ STATIC_PATH = "/chat_service/chat/static/"
 
 # CHAT MICROSERVICE CONFIGURATION
 # IP del microservicio de chat en traefik.
-CHAT_URL = 'chat.chat.localhost'
+CHAT_URL = 'http://chat.chat.localhost'
 
 # USER MICROSERVICE CONFIGURATION
 # IP del microservicio de usuario en traefik.
-USER_URL = 'user.chat.localhost'
+USER_URL = 'http://user.chat.localhost'
 ```
 
 Una ves creado el **.env**, para crear una imagen en Docker debemos entrar en la carpeta **dockers/chat_service** y abrir el archivo **docker-compose.yml** con un editor cualquiera y verificar que versión de chat_service se ejecutara, en nuestro caso, tenemos:
@@ -167,7 +173,7 @@ y verificar si la imagen **chat_service** esta corriendo, junto a **traefik, mys
 
 ## User Service
 
-### Configurar variables locales (dotenv) y configurar la base de datos:
+### Configurar variables locales (dotenv) y configurar la base de datos (Esto es en caso de querer hacer testeos desde una computadora local):
 
 Primero debemos configurar la base de datos y crear los modelos necesarios para funcionar con el **user_service**, por lo que nos vamos a la carpeta **/user_service/user_service**, luego duplicamos y cambiamos el nombre de **env-example** a **env** y cambiar los valores dentro por los siguientes:
 
@@ -182,12 +188,13 @@ DATABASE_NAME  =  'chat_real_time'
 DATABASE_USER  =  ''
 # Contraseña de usuario secundario de mysql.
 DATABASE_PASSWORD  =  ''
-# IP de mysql corriendo en docker, utilizando el comando "docker ps" o "docker port mysql".
+# IP de mysql corriendo en docker, se puede obtener con el siguiente comando
+(docker network inspect bridge --format='{{json .Containers}}' | jq -r '.[] | .Name + " " + .IPv4Address').
 DATABASE_HOST  =  'xxx.xxx.xxx.xxx'
 DATABASE_PORT  =  '3306'
 
 # REDIS CONFIGURATION
-# IP de redis corriendo en docker, utilizando el comando "docker ps" o "docker port redis".
+# IP de redis corriendo en docker.
 REDIS_HOST  =  'xxx.xxx.xxx.xxx'
 REDIS_PORT  =  '6378'
 
@@ -196,10 +203,10 @@ REDIS_PORT  =  '6378'
 STATIC_PATH  =  "/user_service/chat/static/"
 
 # CHAT MICROSERVICE CONFIGURATION
-CHAT_URL  =  'chat.chat.localhost'
+CHAT_URL  =  'http://chat.chat.localhost'
 
 # USER MICROSERVICE CONFIGURATION
-USER_URL  =  'user.chat.localhost'
+USER_URL  =  'http://user.chat.localhost'
 
 # ADMIN TOKEN CONFIGURATION
 # Nombre del admin de Django que creamos anteriormente en el ChatService
@@ -207,10 +214,6 @@ USERNAME_DATA = ''
 # Contraseña del admin de Django que creamos anteriormente en el ChatService
 PASSW_DATA = ''
 ```
-
-Una ves configurado el **.env** del **user_service/user_service**, procedemos a ir a la carpeta **/user_service** y abrimos una terminal y escribimos el siguiente comando para actualizar la base de datos del servicio de **mysql**, tener en cuenta que el servicio tiene que estar corriendo en Docker, con un **docker ps**:
-
-> python3 manage.py migrate
 
 Ya con eso, tenemos nuestra base de datos **chat_real_time** dentro de mysql creado y configurado correctamente para funcionar con **UserService**! 
 
@@ -249,11 +252,11 @@ STATIC_PATH = "/user_service/chat/static/"
 
 # CHAT MICROSERVICE CONFIGURATION
 # IP del microservicio de chat en traefik.
-CHAT_URL = 'chat.chat.localhost'
+CHAT_URL = 'http://chat.chat.localhost'
 
 # USER MICROSERVICE CONFIGURATION
 # IP del microservicio de usuario en traefik.
-USER_URL = 'user.chat.localhost'
+USER_URL = 'http://user.chat.localhost'
 ```
 
 Una ves creado el **.env**, para crear una imagen en Docker debemos entrar en la carpeta **dockers/user_service** y abrir el archivo **docker-compose.yml** con un editor cualquiera y verificar que versión de chat_service se ejecutara, en nuestro caso, tenemos:
@@ -293,7 +296,7 @@ Y con eso ya deberiamos tener el **userservice** funcionando correctamente en nu
 
 > docker ps 
 
-y verificar si la imagen **user_service** esta corriendo, junto a **chatservice, traefik, mysql y redis**
+y verificar si la imagen **user_service** esta corriendo, junto a **traefik, mysql y redis**
 
 ## Probar servicios y configurar grupos
 
