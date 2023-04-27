@@ -10,14 +10,34 @@ from django.http import JsonResponse
 from user.models import User
 from django.contrib.auth.hashers import make_password, check_password
 import requests as r
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 # Create your views here.
 
 def get_token(chat_url):
+    # Obtengo el token accediendo con admin
     params = {"username": config('USERNAME_DATA'), "password": config('PASSW_DATA')}
-    params_response = r.post(chat_url + "api/token/", data=params)
-    print("Esto es la response: ", params_response.json())
-    return params_response.json()
+    
+    try:
+        params_response = r.post(chat_url + "/api/token/", data=params)
+        print("Esto es la response: ", params_response.json())
+        return params_response.json()
+    except:
+        session = r.Session()
+        retry = Retry(connect=3, backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        # session.mount(chat_url, adapter)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        session.post(chat_url + "/api/token/", data=params)
+        return params_response.json()
+      
+    # # Obtengo el token accediendo con admin
+    # params = {"username": config('USERNAME_DATA'), "password": config('PASSW_DATA')}
+    # params_response = r.post(chat_url + "api/token/", data=params)
+    # print("Esto es la response: ", params_response.json())
+    # return params_response.json()
 
 def user_login(request):
     user_url = config('USER_URL')
