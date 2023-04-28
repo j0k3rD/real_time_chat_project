@@ -23,7 +23,9 @@
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <li><a class="dropdown-item" href="#">Perfil</a></li>
-                    <li><a class="dropdown-item" href="#">Desconectarse</a></li>
+                    <form action="" method="POST">
+                      <li><a class="dropdown-item" href="#">Desconectarse</a></li>
+                    </form>
                   </ul>
                 </li>
               </ul>
@@ -43,11 +45,11 @@
       <div class="d-flex flex-wrap justify-content-center item2">
         {% for group in groups %}
           <div class="card card-chat card-hov" style="width: 16rem;">
-              <img class="chat-img" src="{% static 'img/Eighty_Six_logo.jpg' %}">
+              <img class="chat-img" src="{% static 'img/Eighty_Six_logo.png' %}">
               <div class="card-body">
-                <h5 class="card-title">Nombre de grupo</h5>
+                <h5 class="card-title">{{ group.name }}</h5>
                 <p class="card-text">Aquí va el texto relacionado a la descripción del grupo.</p>
-                <a href="#" class="btn btn-primary">Enter chat</a>
+                <a href="{{ chat_url }}/group/{{ group.id }}" class="btn btn-primary">Enter chat</a>
               </div>
           </div>
         {% endfor %}
