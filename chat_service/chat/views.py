@@ -28,6 +28,11 @@ def autenticate(token_str):
 def get_access_token(request):
     return request.COOKIES.get('access_token', None)
 
+def del_access_token(request):
+    response = HttpResponseRedirect(config('USER_URL') + "/login/")
+    response.delete_cookie('access_token')
+    return response
+
 def get_token_page(request):
     token = request.GET.get('token', None)
     user_url = config('USER_URL')
@@ -41,20 +46,26 @@ def get_token_page(request):
 
 #!APLICAR SERVICIOS
 def get_main_page(request):
-    user_url = config('USER_URL')
-    if autenticate(get_access_token(request)):
-        groups = Group.objects.all()
-        context = {
-            'groups': groups,
-        }
-        request
-        return render(request, 'chat_main_page.html', context)
-        # return HttpResponse("Esto es el menu")
+    if request.method == 'POST':
+        return del_access_token(request)
     else:
-        return HttpResponseRedirect(user_url + "/login/")
+        user_url = config('USER_URL')
+        chat_url = config('CHAT_URL')
+        if autenticate(get_access_token(request)):
+            groups = Group.objects.all()
+            context = {
+                'groups': groups,
+                'chat_url': chat_url,
+            }
+            request
+            return render(request, 'chat_main_page.html', context)
+            # return HttpResponse("Esto es el menu")
+        else:
+            return HttpResponseRedirect(user_url + "/login/")
 
 def get_group(request, group_id):
     user_url = config('USER_URL')
+    chat_url = config('CHAT_URL')
     if autenticate(get_access_token(request)):
         group = Group.objects.get(id=group_id)
         messages = Message.objects.filter(group=group).order_by('date')
@@ -63,6 +74,7 @@ def get_group(request, group_id):
         context = {
             'group': group,
             'messages': messages,
+            'chat_url': chat_url,
         }
 
         return render(request, 'group.html', context)

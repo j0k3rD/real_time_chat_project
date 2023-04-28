@@ -23,8 +23,9 @@
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <li><a class="dropdown-item" href="#">Perfil</a></li>
-                    <form action="{{chat_url}}/menu/" method="POST">
-                      <li><a class="dropdown-item" href="#">Desconectarse</a></li>
+                    <form method="POST" action=>
+                      {% csrf_token %}
+                      <li><button type="submit" class="dropdown-item" >Desconectarse</button></li>
                     </form>
                   </ul>
                 </li>
