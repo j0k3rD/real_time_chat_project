@@ -6,8 +6,8 @@ from rest_framework_simplejwt import views as jwt_views
 from rest_framework.views import APIView
 from django.http import HttpResponse
 
-
 urlpatterns = [
+    path('token/', views.get_token_page, name='get_token'),
     path('menu/', views.get_main_page, name='main_page'),
     path('group/<int:group_id>/', views.get_group, name='group_chat'), 
     path('health_check/', views.health_check),

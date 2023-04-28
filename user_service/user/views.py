@@ -19,25 +19,8 @@ def get_token(chat_url):
     # Obtengo el token accediendo con admin
     params = {"username": config('USERNAME_DATA'), "password": config('PASSW_DATA')}
     
-    try:
-        params_response = r.post(chat_url + "/api/token/", data=params)
-        print("Esto es la response: ", params_response.json())
-        return params_response.json()
-    except:
-        session = r.Session()
-        retry = Retry(connect=3, backoff_factor=0.5)
-        adapter = HTTPAdapter(max_retries=retry)
-        # session.mount(chat_url, adapter)
-        session.mount('http://', adapter)
-        session.mount('https://', adapter)
-        session.post(chat_url + "/api/token/", data=params)
-        return params_response.json()
-      
-    # # Obtengo el token accediendo con admin
-    # params = {"username": config('USERNAME_DATA'), "password": config('PASSW_DATA')}
-    # params_response = r.post(chat_url + "api/token/", data=params)
-    # print("Esto es la response: ", params_response.json())
-    # return params_response.json()
+    params_response = r.post("http://chatservice:7000/api/token/", data=params) # TODO: cambiar por chat_url no funciona, de momento lo dejo hardcodeado.
+    return params_response.json()
 
 def user_login(request):
     user_url = config('USER_URL')
@@ -48,17 +31,12 @@ def user_login(request):
         user = User.objects.get(email=email)
         #! Este chequeo va aca o en el servicio?
         checkpassword = check_password(password, user.password)
-        print("Esto es passw: ", password)
         if user is not None:
             if checkpassword:
                 token = get_token(chat_url)
-                headersAuth = {
-                    "AUTHORIZATION": "Bearer " + str(token["access"])
-                }
-                print("Esto es el token: ", headersAuth)
-                response = HttpResponseRedirect(chat_url + "/menu/", {'user_url': user_url}, headers=headersAuth)
-                response.set_cookie('access_token', token['access'])
-                # return redirect(response.url)
+                response = HttpResponseRedirect(chat_url + "/token/" + "?token={}".format(token["access"]), {'user_url': user_url}) # TODO: Para que envia user_url?
+                
+                # response['Authorization'] = 'Bearer {}'.format(token)
                 return response
             else:
                 return HttpResponse("Nombre de usuario o contraseña incorrectos.")

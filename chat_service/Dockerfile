@@ -26,7 +26,7 @@ RUN mkdir app
 COPY ./chat_service /home/djangoapp/chat_service
 COPY ./chat /home/djangoapp/chat
 COPY ./manage.py /home/djangoapp/
-COPY ./entrypoint.sh /entrypoint.sh
+COPY ./entrypoint.sh /home/djangoapp/entrypoint.sh
 
 # TODO: cambiar por requirements_production.txt
 ADD requirements_prod.txt ./requirements.txt
@@ -44,4 +44,4 @@ EXPOSE 7000
 #CMD ["gunicorn", "--workers", "1", "--log-level", "INFO", "--bind", "0.0.0.0:5000", "app:create_app()"]
 # RUN python3 manage.py migrate
 
-CMD ["/entrypoint.sh"]
+CMD ["/home/djangoapp/entrypoint.sh"]

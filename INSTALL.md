@@ -48,47 +48,21 @@ Y dejar runeando las tres imagenes con docker compose, que se encuentra dentro d
 
 ## Chat Service
 
-### Configurar variables locales (dotenv) y configurar la base de datos (Necesario para crear superuser en Django y testeo local):
+### Crear Super User en Django: 
 
-Primero debemos configurar la base de datos y crear los modelos necesarios para funcionar con el **chat_service**, por lo que nos vamos a la carpeta **/chat_service/chat_service**, luego duplicamos y cambiamos el nombre de **env-example** a **env** y cambiar los valores dentro por los siguientes:
+Para crear un super usuario y poder editar los grupos, abrir el archivo **entrypoint_superuser.sh** y cambiar el contenido en
 
 ```
-# Key de Django https://docs.djangoproject.com/en/4.1/topics/signing/
-SECRET_KEY  =  ''
+#!/bin/bash
 
-# DATABASE CONFIGURATION
-# Nombre de la base de datos en mysql.
-DATABASE_NAME  =  'chat_real_time'
-# Nombre de usuario secundario de mysql.
-DATABASE_USER  =  ''
-# Contraseña de usuario secundario de mysql.
-DATABASE_PASSWORD  =  ''
-# IP de mysql corriendo en docker, se puede obtener con el siguiente comando
-(docker network inspect red --format='{{json .Containers}}' | jq -r '.[] | .Name + " " + .IPv4Address').
-DATABASE_HOST  =  'xxx.xxx.xxx.xxx'
-DATABASE_PORT  =  '3306'
-
-# REDIS CONFIGURATION
-# IP de redis corriendo en docker.
-REDIS_HOST  =  'xxx.xxx.xxx.xxx'
-REDIS_PORT  =  '6378'
-
-# TEMPLATES CONFIGURATION
-# Utilizado para redireccionar los estilos estaticos y templates.
-STATIC_PATH  =  "/chat_service/chat/static/"
-
-# CHAT MICROSERVICE CONFIGURATION
-CHAT_URL  =  'chat.chat.localhost'
-
-# USER MICROSERVICE CONFIGURATION
-USER_URL  =  'user.chat.localhost'
+# Create superuser
+export DJANGO_SUPERUSER_PASSWORD=XXXXXXX # Contraseña del super usuario, importante no olvidar
+export DJANGO_SUPERUSER_USERNAME=XXXXXXX # Nombre de super usuario, importante, no olvidar
+export DJANGO_SUPERUSER_EMAIL=XXXXXXX 	 # Email del superusuario, esto no es muy necesario
+python3 manage.py createsuperuser --noinput
 ```
 
-y luego crear un admin para django con el siguiente comando (recordar los datos ingresados, tanto de nombre de **admin** y de **contraseña**, porque se usara mas adelante al cambiar el **.env** de **UserService**):
-
->python3 manage.py createsuperuser
-
-Ya con eso, tenemos nuestra base de datos **chat_real_time** dentro de mysql creado y configurado correctamente para funcionar con **ChatService**! 
+Y luego cambiar el nombre de **entrypoint.sh** a **entrypoint1.sh** y de **entrypoint_superuser.sh** a **entrypoint.sh**, seguir todos los pasos de abajo crear imagen y runear la imagen, luego parar el container, eliminar la imagen y cambiar de nombre **entrypoint1.sh** a **entrypoint.sh**, generar imagen y correrlo. (Si hay una mejor manera de hacer esto, cambiarlo)
 
 ### Crear imagen del ChatService en Docker:
 
