@@ -35,8 +35,6 @@ def user_login(request):
             if checkpassword:
                 token = get_token(chat_url)
                 response = HttpResponseRedirect(chat_url + "/token/" + "?token={}".format(token["access"]), {'user_url': user_url}) # TODO: Para que envia user_url?
-                
-                # response['Authorization'] = 'Bearer {}'.format(token)
                 return response
             else:
                 return HttpResponse("Nombre de usuario o contraseña incorrectos.")
