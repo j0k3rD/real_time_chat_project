@@ -1,4 +1,5 @@
 {% extends 'base_chat.html' %}
+{% load static %}
 {% block head %}
 <link rel="stylesheet" href="{% static 'style/styles.css' %}">
 {% endblock %}
@@ -7,7 +8,7 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light header">
           <div class="container-fluid">
             <a class="navbar-brand" href="#">
-              {% load static %}
+
               <img src="{% static 'img/live-chat-logo.png' %}" alt="" width="5%" height="auto" class="d-inline-block align-text-center">
               Real time chat
             </a>
