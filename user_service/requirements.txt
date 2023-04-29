@@ -7,3 +7,4 @@ python-decouple==3.4
 pymysql==1.0.2
 mysql.connector==2.2.9
 djangorestframework-simplejwt==5.2.2
+pybreaker==1.0.1

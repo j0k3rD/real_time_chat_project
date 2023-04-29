@@ -3,8 +3,6 @@ from . import views
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt import views as jwt_views
-from rest_framework.views import APIView
-from django.http import HttpResponse
 
 urlpatterns = [
     path('token/', views.get_token_page, name='get_token'),

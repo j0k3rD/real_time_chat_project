@@ -4,35 +4,15 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from chat.models import Message, Group
-from django.http import HttpResponse, HttpResponseRedirect
+from chat.functions import autenticate, get_access_token, del_access_token
+from django.http import HttpResponseRedirect
 from decouple import config
-from rest_framework_simplejwt.tokens import AccessToken
+import pybreaker
+from chat.services.chat_circuit_breaker import ChatListener, LogListener
 
-# Autenticación del token, si no existe o es inválido, redirige al login
-# TODO: Ver si se puede refrescar el token en caso de expirar.
-def autenticate(token_str):
+chat_breaker = pybreaker.CircuitBreaker(listeners=[ChatListener(), LogListener()])
 
-    if token_str is None:
-        return False
-
-    try:
-        token = AccessToken(token_str)
-    except:
-        token = None
-
-    if token is not None:
-        return True
-    else:
-        return False
-    
-def get_access_token(request):
-    return request.COOKIES.get('access_token', None)
-
-def del_access_token(request):
-    response = HttpResponseRedirect(config('USER_URL') + "/login/")
-    response.delete_cookie('access_token')
-    return response
-
+@chat_breaker
 def get_token_page(request):
     token = request.GET.get('token', None)
     user_url = config('USER_URL')
@@ -44,7 +24,7 @@ def get_token_page(request):
     else:
         return HttpResponseRedirect(user_url + "/login/")
 
-#!APLICAR SERVICIOS
+@chat_breaker
 def get_main_page(request):
     if request.method == 'POST':
         return del_access_token(request)
@@ -63,6 +43,7 @@ def get_main_page(request):
         else:
             return HttpResponseRedirect(user_url + "/login/")
 
+@chat_breaker
 def get_group(request, group_id):
     user_url = config('USER_URL')
     chat_url = config('CHAT_URL')
@@ -70,7 +51,6 @@ def get_group(request, group_id):
         group = Group.objects.get(id=group_id)
         messages = Message.objects.filter(group=group).order_by('date')
 
-        
         context = {
             'group': group,
             'messages': messages,
@@ -81,7 +61,6 @@ def get_group(request, group_id):
     else:
         return HttpResponseRedirect(user_url + "/login/")
 
-#! PREGUNTA: Hay que llevarlo a un servicio?
 def health_check(request):
     '''
     Función que chequea el estado de la base de datos y el servidor de redis
