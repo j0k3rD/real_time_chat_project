@@ -1,5 +1,6 @@
 import logging
 import pybreaker
+from django.http import HttpResponse
 
 class UserListener(pybreaker.CircuitBreakerListener):
     """
@@ -19,10 +20,10 @@ class UserListener(pybreaker.CircuitBreakerListener):
         print("state_change")
 
     def failure(self, cb, exc):
-        """
-        Called when a function invocation raises a system error.
-        """
-        print("failure")
+        if isinstance(exc, pybreaker.CircuitBreakerError):
+            # Si la excepción es del tipo pybreaker.CircuitBreakerError, activamos el estado de falla
+            cb.fail(exc)  # fail() y trip () al parecer no funcionan en esta version de pybreaker. TODO: Revisar en la documentación por una alternativa o tratar de arreglarlo
+            return HttpResponse("El servicio no está disponible en este momento, por favor intente más tarde.")
 
     def success(self, cb):
         """

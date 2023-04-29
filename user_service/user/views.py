@@ -25,6 +25,21 @@ def get_token(chat_url):
     params_response = r.post("http://chatservice:7000/api/token/", data=params) # TODO: cambiar por chat_url no funciona, de momento lo dejo hardcodeado.
     return params_response.json()
 
+# Reviso si el servicio de chat está disponible
+def check_chat_service_availability():
+    url = config('CHAT_URL')
+    # Ejecuto un try-except para ver si el servicio está disponible
+    try:
+        # Obtengo la url del servicio de chat y hago un request
+        response = r.get(url)
+        # Si el request devuelve un 200, el servicio está disponible
+        response.raise_for_status()
+        # Devuelvo un true
+        return True
+    except r.exceptions.RequestException:
+        # En caso contrario, devuelvo un false
+        return False
+
 @user_breaker
 def user_login(request):
     user_url = config('USER_URL')
@@ -37,14 +52,32 @@ def user_login(request):
         checkpassword = check_password(password, user.password)
         if user is not None:
             if checkpassword:
-                token = get_token(chat_url)
-                response = HttpResponseRedirect(chat_url + "/token/" + "?token={}".format(token["access"]), {'user_url': user_url}) # TODO: Para que envia user_url?
-                return response
-            else:
-                return HttpResponse("Nombre de usuario o contraseña incorrectos.")
+                # Verifico si el servicio de chat está disponible
+                chat_available = check_chat_service_availability()
+                if chat_available:
+                    # En caso de devolver un true, obtengo el token y redirijo al usuario a la página de chat
+                    token = get_token(chat_url)
+                    response = HttpResponseRedirect(chat_url + "/token/" + "?token={}".format(token["access"]), {'user_url': user_url})
+                    return response
+                else:
+                    # En caso de devolver un false, utilizo el CircuitBreakerError para llamar al metodo fail en el listener
+                    # Tira error: 'CircuitBreaker' object has no attribute 'failure'
+                    # Al parecer, el circuit breaker no tiene el método failure, por lo que no se puede llamar a este método
+                    # Parametros: El primer argumento es para cb y el otro para exc, pero no funcionan
+                    user_breaker.failure(None, pybreaker.CircuitBreakerError("El servicio de chat no está disponible")) # TODO: lograr llamar al metodo failure y ver si se ejecuta
+                    
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
+
+
+# @user_login.error_handler
+# def user_login_error_handler(cb, exc):
+#     """
+#     Handler for circuit breaker errors in user_login view.
+#     """
+#     # si se produce una excepción de circuit breaker, redirige al usuario a una página de error
+           
 
 @user_breaker
 def register(request):
