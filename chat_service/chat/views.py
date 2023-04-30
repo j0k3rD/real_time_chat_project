@@ -84,6 +84,7 @@ def health_check(request):
     mysql_user = config('DATABASE_USER')
     mysql_password = config('DATABASE_PASSWORD')
     mysql_database = config('DATABASE_NAME')
+    
     try:
         cnx = mysql.connector.connect(user=mysql_user, password=mysql_password, host=mysql_host, port=mysql_port, database=mysql_database)
         cnx.ping(True)
