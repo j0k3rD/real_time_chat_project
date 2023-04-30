@@ -15,8 +15,8 @@ services:
     - "traefik.http.routers.chatservice.rule=Host(`${NAME}.localhost`)" # && PathPrefix(`/ws`)"
     - "traefik.http.routers.chatservice.tls=true"
     - "traefik.http.services.chatservice.loadbalancer.server.port=7000"
-    # - "traefik.http.routers.chatservice.entrypoints=http,https,redis,mysql"
-    # - "traefik.http.services.chatservice.loadbalancer.sticky.cookie=true"
+    - "traefik.http.routers.chatservice.entrypoints=http,https,redis,mysql"
+    - "traefik.http.services.chatservice.loadbalancer.sticky.cookie=true"
 
 networks:
   red:
