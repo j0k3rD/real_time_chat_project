@@ -32,3 +32,11 @@ class UserListener(pybreaker.CircuitBreakerListener):
         Called when a function invocation succeeds.
         """
         pass
+
+#class LogListener(pybreaker.CircuitBreakerListener):
+#    """
+#    Listener used to log circuit breaker events."
+#    """
+#    def state_change(self, cb, old_state, new_state):
+#        msg = "State Change: CB: {0}, New State: {1}".format(cb.name, new_state)
+#        logging.info(msg)

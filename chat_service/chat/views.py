@@ -1,56 +1,58 @@
 import redis
 import mysql.connector
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.http import JsonResponse
-from chat.models import Message, Group
-from chat.functions import autenticate, get_access_token, del_access_token
 from django.http import HttpResponseRedirect
 from decouple import config
 import pybreaker
-from chat.services.circuit_breaker import ChatListener, LogListener
+from chat.services.circuit_breaker import ChatListener
+from .functions import Functions
+from .services.group_service import GroupService
+from .services.message_service import MessageService
 
-chat_breaker = pybreaker.CircuitBreaker(listeners=[ChatListener(), LogListener()])
+chatBreaker = pybreaker.CircuitBreaker(fail_max=5, reset_timeout=60, listeners=[ChatListener()])
+groupService = GroupService()
+messageService = MessageService()
+functions = Functions()
 
-@chat_breaker
+@chatBreaker
 def get_token_page(request):
     token = request.GET.get('token', None)
     user_url = config('USER_URL')
 
     if token is not None:
         response = HttpResponseRedirect("/menu/")
-        response.set_cookie('access_token', token)
+        response = functions.set_access_token(response, token)
         return response
     else:
         return HttpResponseRedirect(user_url + "/login/")
 
-@chat_breaker
+@chatBreaker
 def get_main_page(request):
     if request.method == 'POST':
-        return del_access_token(request)
+        response = HttpResponseRedirect(config('USER_URL') + "/login/")
+        return functions.del_access_token(response)	
     else:
         user_url = config('USER_URL')
         chat_url = config('CHAT_URL')
-        if autenticate(get_access_token(request)):
-            groups = Group.objects.all()
+        if functions.autenticate(functions.get_access_token(request)):
             context = {
-                'groups': groups,
+                'groups': groupService.get_all(),
                 'chat_url': chat_url,
             }
-            request
             return render(request, 'chat_main_page.html', context)
             # return HttpResponse("Esto es el menu")
         else:
             return HttpResponseRedirect(user_url + "/login/")
 
-@chat_breaker
+@chatBreaker
 def get_group(request, group_id):
     user_url = config('USER_URL')
     chat_url = config('CHAT_URL')
-    if autenticate(get_access_token(request)):
-        group = Group.objects.get(id=group_id)
-        messages = Message.objects.filter(group=group).order_by('date')
-
+    if functions.autenticate(functions.get_access_token(request)):
+        group = groupService.get_all()
+        messages = messageService.get_by_group_id_order_by_date(groupModel = group)
         context = {
             'group': group,
             'messages': messages,

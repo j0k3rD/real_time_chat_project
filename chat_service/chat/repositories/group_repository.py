@@ -1,9 +1,7 @@
 # Creamos el repositorio de la entidad Group, para Django y MySQL
-from .database import Database
 from .repository import Create, Delete, Read, Update 
 from ..models import Group as GroupModel
 
-# TODO: Implementar delete en caso de agregar administrador para eliminar cursos.
 class GroupRepository(Read):
     '''
     Clase que representa el repositorio de la entidad Group
@@ -18,11 +16,6 @@ class GroupRepository(Read):
     @property
     def type_model(self):
         return self.__type_model
-    
-    # def create(self, name):
-    #     group = GroupModel.objects.create()
-    #     group.name = name
-    #     group.save()
 
     def find_all(self):
         return GroupModel.objects.all()

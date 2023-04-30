@@ -1,61 +1,31 @@
-from ..repositories.database import Database
-from repositories import Create, Delete, Read, Update 
+from ..repositories.message_repository import MessageRepository
+from .services import Service
 from ..models import Message as MessageModel
 
-
-class MessageRepository(Create, Read, Update, Delete):
+class MessageService(Service):
     '''
-    Clase que representa el repositorio de la entidad Message
+    Clase que representa el servicio de la entidad Group
     param:
-        - Create: Clase que hereda de la interfaz Create
-        - Read: Clase que hereda de la interfaz Read
-        - Update: Clase que hereda de la interfaz Update
-        - Delete: Clase que hereda de la interfaz Delete
+        - Service: Clase que hereda de la interfaz Service
     '''
+
     def __init__(self):
-        self.__type_model = MessageModel
+        self.__repository = MessageRepository()
 
-    @property
-    def type_model(self):
-        return self.__type_model
+    def add(self, message, user_id, username, group):
+        message = MessageModel(
+            message=message,
+            user_id=user_id,
+            username=username,
+            group=group,
+        )
+        return self.__repository.create(message)
+        
+    def get_all(self):
+        return self.__repository.find_all()
+
+    def get_by_id(self, id):
+        return self.__repository.find_by_id(id = id)
     
-    def create(self, message):
-        query = "INSERT INTO messages (content, author) VALUES (%s, %s)"
-        values = (message.content, message.author)
-        cursor = self.cnx.cursor()
-        cursor.execute(query, values)
-        self.cnx.commit()
-        cursor.close()
-
-    def update(self, message):
-        query = "UPDATE messages SET content = %s, author = %s WHERE id = %s"
-        values = (message.content, message.author, message.id)
-        cursor = self.cnx.cursor()
-        cursor.execute(query, values)
-        self.cnx.commit()
-        cursor.close()
-
-    def find_all(self):
-        query = "SELECT * FROM messages"
-        cursor = self.cnx.cursor()
-        cursor.execute(query)
-        rows = cursor.fetchall()
-        cursor.close()
-        return [MessageModel(*row) for row in rows]
-
-    def find_by_id(self, id):
-        query = "SELECT * FROM messages WHERE id = %s"
-        values = (id,)
-        cursor = self.cnx.cursor()
-        cursor.execute(query, values)
-        row = cursor.fetchone()
-        cursor.close()
-        return MessageModel(*row) if row is not None else None
-
-    def delete(self, id):
-        query = "DELETE FROM messages WHERE id = %s"
-        values = (id,)
-        cursor = self.cnx.cursor()
-        cursor.execute(query, values)
-        self.cnx.commit()
-        cursor.close()
+    def get_by_group_id_order_by_date(self, groupModel):
+        return self.__repository.find_by_group_id_order_by_date(groupModel)

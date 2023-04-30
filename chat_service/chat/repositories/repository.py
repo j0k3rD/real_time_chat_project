@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from .. import db
+from django.db import models
 
 # Clase abstracta que define los métodos que deben implementar las clases que hereden de ella.
 
@@ -10,7 +10,7 @@ class Create(ABC):
         - ABC: Clase de la cual hereda que es abstracta.
     '''
     @abstractmethod  
-    def create(self, model: db.Model):
+    def create(self, model: models.Model):
         '''
         Método abstracto para crear un modelo
         
@@ -33,7 +33,7 @@ class Read(ABC):
         pass
 
     @abstractmethod
-    def find_by_id(self, id: int) -> db.Model:
+    def find_by_id(self, id: int) -> models.Model:
         '''
         Método abstracto para encontrar un modelo por su id
         '''
@@ -46,7 +46,7 @@ class Update(ABC):
         - ABC: Clase de la cual hereda que es abstracta.
     '''
     @abstractmethod
-    def update(self, model: db.Model) -> db.Model:
+    def update(self, model: models.Model) -> models.Model:
         '''
         Método abstracto para actualizar un modelo
         '''
@@ -59,7 +59,7 @@ class Delete(ABC):
         - ABC: Clase de la cual hereda que es abstracta.
     '''
     @abstractmethod
-    def delete(self, model: db.Model):
+    def delete(self, model: models.Model):
         '''
         Método abstracto para eliminar un modelo
         '''
