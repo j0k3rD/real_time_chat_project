@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.views import LoginView
 from user.models import User
 from decouple import config
 import redis, mysql
@@ -10,35 +9,17 @@ from django.http import JsonResponse
 from user.models import User
 from django.contrib.auth.hashers import make_password, check_password
 import requests as r
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 import pybreaker
-from user.services.user_circuit_breaker import UserListener, LogListener
+from user.services.circuit_breaker import UserListener
 
-user_breaker = pybreaker.CircuitBreaker(listeners=[UserListener(), LogListener()])
+user_breaker = pybreaker.CircuitBreaker(fail_max=5, reset_timeout=60, listeners=[UserListener()])
 
 @user_breaker
-def get_token(chat_url):
+def get_token():
     # Obtengo el token accediendo con admin
     params = {"username": config('USERNAME_DATA'), "password": config('PASSW_DATA')}
-    
     params_response = r.post("http://chatservice:7000/api/token/", data=params) # TODO: cambiar por chat_url no funciona, de momento lo dejo hardcodeado.
     return params_response.json()
-
-# Reviso si el servicio de chat está disponible
-def check_chat_service_availability():
-    url = config('CHAT_URL')
-    # Ejecuto un try-except para ver si el servicio está disponible
-    try:
-        # Obtengo la url del servicio de chat y hago un request
-        response = r.get(url)
-        # Si el request devuelve un 200, el servicio está disponible
-        response.raise_for_status()
-        # Devuelvo un true
-        return True
-    except r.exceptions.RequestException:
-        # En caso contrario, devuelvo un false
-        return False
 
 @user_breaker
 def user_login(request):
@@ -52,19 +33,10 @@ def user_login(request):
         checkpassword = check_password(password, user.password)
         if user is not None:
             if checkpassword:
-                # Verifico si el servicio de chat está disponible
-                chat_available = check_chat_service_availability()
-                if chat_available:
-                    # En caso de devolver un true, obtengo el token y redirijo al usuario a la página de chat
-                    token = get_token(chat_url)
-                    response = HttpResponseRedirect(chat_url + "/token/" + "?token={}".format(token["access"]), {'user_url': user_url})
-                    return response
-                else:
-                    # En caso de devolver un false, utilizo el CircuitBreakerError para llamar al metodo fail en el listener
-                    # Tira error: 'CircuitBreaker' object has no attribute 'failure'
-                    # Al parecer, el circuit breaker no tiene el método failure, por lo que no se puede llamar a este método
-                    # Parametros: El primer argumento es para cb y el otro para exc, pero no funcionan
-                    user_breaker.failure(None, pybreaker.CircuitBreakerError("El servicio de chat no está disponible")) # TODO: lograr llamar al metodo failure y ver si se ejecuta
+                # En caso de devolver un true, obtengo el token y redirijo al usuario a la página de chat
+                token = get_token()
+                response = HttpResponseRedirect(chat_url + "/token/" + "?token={}".format(token["access"]), {'user_url': user_url})
+                return response
                     
     else:
         form = AuthenticationForm()

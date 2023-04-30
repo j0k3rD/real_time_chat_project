@@ -8,7 +8,7 @@ from chat.functions import autenticate, get_access_token, del_access_token
 from django.http import HttpResponseRedirect
 from decouple import config
 import pybreaker
-from chat.services.chat_circuit_breaker import ChatListener, LogListener
+from chat.services.circuit_breaker import ChatListener, LogListener
 
 chat_breaker = pybreaker.CircuitBreaker(listeners=[ChatListener(), LogListener()])
 
