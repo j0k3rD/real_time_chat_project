@@ -1,6 +1,5 @@
 from .repository import Create, Delete, Read, Update 
 from ..models import Message as MessageModel
-from ..models import Group as GroupModel
 
 class MessageRepository(Create, Read):
     '''

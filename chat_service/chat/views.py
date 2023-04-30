@@ -51,11 +51,12 @@ def get_group(request, group_id):
     user_url = config('USER_URL')
     chat_url = config('CHAT_URL')
     if functions.autenticate(functions.get_access_token(request)):
-        group = groupService.get_all()
+        group = groupService.get_by_id(group_id)
         messages = messageService.get_by_group_id_order_by_date(groupModel = group)
+
         context = {
             'group': group,
-            'messages': messages,
+            'chats': messages,
             'chat_url': chat_url,
         }
 
@@ -84,7 +85,7 @@ def health_check(request):
     mysql_user = config('DATABASE_USER')
     mysql_password = config('DATABASE_PASSWORD')
     mysql_database = config('DATABASE_NAME')
-    
+
     try:
         cnx = mysql.connector.connect(user=mysql_user, password=mysql_password, host=mysql_host, port=mysql_port, database=mysql_database)
         cnx.ping(True)
