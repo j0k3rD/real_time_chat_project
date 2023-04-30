@@ -1,10 +1,7 @@
-from .database import Database
 from .repository import Create, Delete, Read, Update 
-from ..models import Message as UserModel
-from django.contrib.auth.hashers import make_password, check_password
+from ..models import User as UserModel
 
-
-class UserRepository(Create, Read, Update):
+class UserRepository(Create, Read):
     '''
     Clase que representa el repositorio de la entidad User
     param:
@@ -19,14 +16,9 @@ class UserRepository(Create, Read, Update):
     def type_model(self):
         return self.__type_model
     
-    def create(self, username, email, password):
-        user = UserModel(
-            username=username,
-            email=email,
-            password=password,
-        )
-        user.password = make_password(password)
+    def create(self, user: UserModel):
         user.save()
+        return user
 
     # def update(self, id, username, email, password):
     #     user = UserModel.objects.get(id=id)
@@ -43,6 +35,9 @@ class UserRepository(Create, Read, Update):
     
     def find_by_email(self, email):
         return UserModel.objects.get(email=email)
+
+    def check_user_email(self, email):
+        return UserModel.objects.filter(email=email).exists()
 
     # def delete(self, id):
         # UserModel.objects.get(id=id).delete()
