@@ -34,8 +34,16 @@ def user_login(request):
         if user is not None:
             if checkpassword:
                 # En caso de devolver un true, obtengo el token y redirijo al usuario a la página de chat
-                token = get_token()
-                response = HttpResponseRedirect(chat_url + "/token/" + "?token={}".format(token["access"]), {'user_url': user_url})
+                try:
+                    token = get_token()
+                except:
+                    response = render(request, 'login.html', {'error': 'Error obtaining token.'})
+
+                try:
+                    response = HttpResponseRedirect(chat_url + "/token/" + "?token={}".format(token["access"]), {'user_url': user_url})
+                except:
+                    response = render(request, 'login.html', {'error': 'Error with the chat service.'})
+                    
                 return response
                     
     else:
