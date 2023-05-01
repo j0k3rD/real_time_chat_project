@@ -31,6 +31,7 @@
 
         <textarea class="form-control chat_box" id="chat-log" rows="3">
           {% for chat in chats %}
+              {{ chat.message.username}}
               {{ chat.message }}
           {% empty %}
               No chats yet.
