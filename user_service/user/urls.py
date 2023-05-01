@@ -24,6 +24,6 @@ urlpatterns = [
     path('login/', user_login, name='login'),
     path('health_check/', health_check, name='health_check'),
     path('register/', register, name='register'),
-    #path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    #path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'), El token se genera interno.
     #path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

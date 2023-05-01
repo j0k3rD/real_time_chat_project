@@ -14,7 +14,6 @@ from .services.message_service import MessageService
 chatBreaker = pybreaker.CircuitBreaker(fail_max=5, reset_timeout=60, listeners=[ChatListener()])
 groupService = GroupService()
 messageService = MessageService()
-functions = Functions()
 
 @chatBreaker
 def get_token_page(request):
@@ -23,7 +22,7 @@ def get_token_page(request):
 
     if token is not None:
         response = HttpResponseRedirect("/menu/")
-        response = functions.set_access_token(response, token)
+        response = Functions.set_access_token(response, token)
         return response
     else:
         return HttpResponseRedirect(user_url + "/login/", {'error': 'Invalid token.'})
@@ -32,16 +31,16 @@ def get_token_page(request):
 def get_main_page(request):
     if request.method == 'POST':
         response = HttpResponseRedirect(config('USER_URL') + "/login/")
-        return functions.del_access_token(response)	
+        return Functions.del_access_token(response)	
     else:
         user_url = config('USER_URL')
         chat_url = config('CHAT_URL')
-        token = functions.autenticate(functions.get_access_token(request))
+        token = Functions.autenticate(Functions.get_access_token(request))
         if token is not None:
             context = {
                 'groups': groupService.get_all(),
                 'chat_url': chat_url,
-                #'user_id': token['user_id'],
+                'user_id': token['user_id'],
                 'username': token['username'],
                 'email': token['email'],
             }
@@ -54,7 +53,7 @@ def get_main_page(request):
 def get_group(request, group_id):
     user_url = config('USER_URL')
     chat_url = config('CHAT_URL')
-    token = functions.autenticate(functions.get_access_token(request))
+    token = Functions.autenticate(Functions.get_access_token(request))
     if token is not None:
         group = groupService.get_by_id(group_id)
         messages = messageService.get_by_group_id_order_by_date(groupModel = group)
@@ -63,7 +62,7 @@ def get_group(request, group_id):
             'group': group,
             'chats': messages,
             'chat_url': chat_url,
-            #'user_id': token['user_id'],
+            'user_id': token['user_id'],
             'username': token['username'],
             'email': token['email'],
         }

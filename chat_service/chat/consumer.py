@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from .models import Message, Group
 from channels.db import database_sync_to_async
+from .functions import Functions
 
 #! APLICAR PATRON REPOSITORIO 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -54,18 +55,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
         print('RECEIVE', text_data)
         data = json.loads(text_data)
         message = data['message']
+        username = data['username']
+        user_id = data['user_id']
         group = await database_sync_to_async(Group.objects.get)(id=self.group_id)
 
-        if self.scope['user'].is_authenticated: #TODO: Verificar despues con token
+        try: #TODO: Verificar despues con token
             print(message)
-            print(self.scope['user'].id)
-            print(self.scope['user'].username)
+            print(username)
+            print(user_id)
             print(group)
             if message != '':
                 chat = Message(
                     message=message,
-                    user_id=self.scope['user'].id,
-                    username=self.scope['user'].username,
+                    user_id=username,
+                    username=user_id,
                     group=group
                 )
                 await database_sync_to_async(chat.save)()
@@ -77,7 +80,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         'message': message
                     }
                 )
-        else: 
+        except: 
             await self.send(text_data=json.dumps({
                 'message': 'You are not authenticated'
             }))

@@ -31,7 +31,7 @@
 
         <textarea class="form-control chat_box" id="chat-log" rows="3">
           {% for chat in chats %}
-              {{ chat.message.username}}
+              {{ chat.message.username }}
               {{ chat.message }}
           {% empty %}
               No chats yet.
@@ -39,12 +39,15 @@
         </textarea><br>
 
         {{group.id|json_script:"group-id"}}
+        {{username|json_script:"username"}}
+        {{user_id|json_script:"user-id"}}
 
       </div>
 
 
       <div class="d-flex">
         <form action="#" method="POST" id="chat-form" name="chat-form">
+          {% csrf_token %}
           <div class="mb-3">
             <label for="form_message" class="form-label"></label>
             <input type="text" name="form_message" class="form-control" id="form_message" placeholder="Enter your message">
@@ -65,8 +68,12 @@
     <script>  
 
       // Obtener el nombre del grupo por medio del id
-            const groupID = JSON.parse(document.getElementById('group-id').textContent)
+      const groupID = JSON.parse(document.getElementById('group-id').textContent)
+      const username = JSON.parse(document.getElementById('username').textContent)
+      const userID = JSON.parse(document.getElementById('user-id').textContent)
       console.log(groupID)
+      console.log(username)
+      console.log(userID)
 
       // Conectar al grupo
       var wss = new WebSocket(
@@ -112,7 +119,9 @@
           }
           
           wss.send(JSON.stringify({
-              'message': message
+              'message': message,
+              'username': username,
+              'user_id': userID,
           }))
       }
     </script>
