@@ -10,7 +10,7 @@ class Create(ABC):
         - ABC: Clase de la cual hereda que es abstracta.
     '''
     @abstractmethod  
-    def create(self, model: models.Model):
+    def create(self, username, email, password):
         '''
         Método abstracto para crear un modelo
         

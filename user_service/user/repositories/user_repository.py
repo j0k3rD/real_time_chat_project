@@ -1,4 +1,5 @@
 from .repository import Create, Delete, Read, Update 
+from django.contrib.auth import get_user_model
 from ..models import User as UserModel
 
 class UserRepository(Create, Read):
@@ -16,8 +17,8 @@ class UserRepository(Create, Read):
     def type_model(self):
         return self.__type_model
     
-    def create(self, user: UserModel):
-        user.save()
+    def create(self, username, email, password):
+        user = get_user_model().objects.create_user(username=username, email=email, password=password)
         return user
 
     # def update(self, id, username, email, password):
@@ -38,6 +39,9 @@ class UserRepository(Create, Read):
 
     def check_user_email(self, email):
         return UserModel.objects.filter(email=email).exists()
+
+    def check_user_username(self, username):
+        return UserModel.objects.filter(username=username).exists()
 
     # def delete(self, id):
         # UserModel.objects.get(id=id).delete()

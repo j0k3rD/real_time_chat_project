@@ -5,12 +5,13 @@ from decouple import config
 import redis, mysql
 from django.http import JsonResponse
 import pybreaker
+import requests
 from user.services.circuit_breaker import UserListener
 from user.services.user_service import UserService
 from user.functions import Functions
 
 userBreaker = pybreaker.CircuitBreaker(fail_max=5, reset_timeout=60, listeners=[UserListener()])
-functions = Functions(userBreaker)
+functions = Functions()
 userService = UserService()
 
 @userBreaker
@@ -23,26 +24,23 @@ def user_login(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
-        user = userService.get_by_email(email)
-        checkpassword = userService.check_password(password, user.password)
-        if user is not None:
-            if checkpassword:
-                # En caso de devolver un true, obtengo el token y redirijo al usuario a la página de chat
-                try:
-                    token = functions.get_token()
-                except:
-                    response = render(request, 'login.html', {'error': 'Error obtaining token.'})
+        try:
+            user = userService.get_by_email(email)
+        except:
+            return render(request, 'login.html', {'error': 'Email do not exist.'})
 
-                try:
-                    response = HttpResponseRedirect(chat_url + "/token/" + "?token={}".format(token["access"]), {'user_url': user_url})
-                except:
-                    response = render(request, 'login.html', {'error': 'Error with the chat service.'})
-                    
-                return response
-                    
+        if userService.check_password(password, user.password):
+            token = functions.get_tokens_for_user(user)
+            try:
+                response = HttpResponseRedirect(chat_url + "/token/" + "?token={}".format(token["access"]), {'user_url': user_url})
+            except:
+                response = render(request, 'login.html', {'error': 'Error with the chat service.'})
+            return response
+        else:
+            return render(request, 'login.html', {'error': 'Incorrect password.'})                     
     else:
         form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})        
+        return render(request, 'login.html', {'form': form})   
 
 @userBreaker
 def register(request):
@@ -57,7 +55,9 @@ def register(request):
         if username and email and password:
             # Compruebo si el email ya existe
             if userService.check_user_email(email):
-                return render(request, 'register.html', {'error': 'El email ya existe.'})
+                return render(request, 'register.html', {'error': 'Email already exists.'})
+            elif userService.check_user_username(username):
+                return render(request, 'register.html', {'error': 'User already exists.'})
             else:
                 userService.add(username=username, email=email, password=password)
                 return redirect(config('USER_URL') + "/login/")

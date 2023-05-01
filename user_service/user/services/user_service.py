@@ -14,12 +14,7 @@ class UserService(Service):
         self.__repository = UserRepository()
 
     def add(self, username, email, password):
-        user = UserModel(
-            username=username,
-            email=email,
-            password=make_password(password),
-        )
-        return self.__repository.create(user)
+        return self.__repository.create(username, email, password)
         
     def get_all(self):
         return self.__repository.find_all()
@@ -35,3 +30,6 @@ class UserService(Service):
     
     def check_user_email(self, email):
         return self.__repository.check_user_email(email = email)
+    
+    def check_user_username(self, username):
+        return self.__repository.check_user_username(username = username)

@@ -34,6 +34,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+AUTH_USER_MODEL = 'user.User'
 
 # Application definition
 
@@ -46,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'rest_framework',
-    # 'rest_framework_simplejwt'
+    'rest_framework_simplejwt'
 ]
 
 MIDDLEWARE = [
@@ -115,10 +116,19 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Configuración de SimpleJWT
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=30),
-#     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
-# }
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
+    #'USER_ID_CLAIM': 'user_id',
+    #'USER_NAME_CLAIM': 'username',
+    #"TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.MyTokenObtainPairSerializer",
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

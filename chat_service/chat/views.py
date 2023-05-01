@@ -26,7 +26,7 @@ def get_token_page(request):
         response = functions.set_access_token(response, token)
         return response
     else:
-        return HttpResponseRedirect(user_url + "/login/")
+        return HttpResponseRedirect(user_url + "/login/", {'error': 'Invalid token.'})
 
 @chatBreaker
 def get_main_page(request):
@@ -36,21 +36,26 @@ def get_main_page(request):
     else:
         user_url = config('USER_URL')
         chat_url = config('CHAT_URL')
-        if functions.autenticate(functions.get_access_token(request)):
+        token = functions.autenticate(functions.get_access_token(request))
+        if token is not None:
             context = {
                 'groups': groupService.get_all(),
                 'chat_url': chat_url,
+                #'user_id': token['user_id'],
+                'username': token['username'],
+                'email': token['email'],
             }
             return render(request, 'chat_main_page.html', context)
             # return HttpResponse("Esto es el menu")
         else:
-            return HttpResponseRedirect(user_url + "/login/")
+            return HttpResponseRedirect(user_url + "/login/", {'error': 'Invalid token.'})
 
 @chatBreaker
 def get_group(request, group_id):
     user_url = config('USER_URL')
     chat_url = config('CHAT_URL')
-    if functions.autenticate(functions.get_access_token(request)):
+    token = functions.autenticate(functions.get_access_token(request))
+    if token is not None:
         group = groupService.get_by_id(group_id)
         messages = messageService.get_by_group_id_order_by_date(groupModel = group)
 
@@ -58,6 +63,9 @@ def get_group(request, group_id):
             'group': group,
             'chats': messages,
             'chat_url': chat_url,
+            #'user_id': token['user_id'],
+            'username': token['username'],
+            'email': token['email'],
         }
 
         return render(request, 'group.html', context)

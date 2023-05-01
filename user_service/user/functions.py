@@ -1,20 +1,23 @@
-from pybreaker import CircuitBreaker
+from rest_framework_simplejwt.tokens import RefreshToken
 from decouple import config
-import requests
+import jwt
 
 class Functions:
 
-    __userBreaker = CircuitBreaker(fail_max=5, reset_timeout=60)
+    def get_tokens_for_user(self, user):
+        refresh = RefreshToken.for_user(user)
+        accessToken = refresh.access_token
 
-    def __init__(self, CircuitBreaker):
-        self.__userBreaker = CircuitBreaker
+        decodeJTW = jwt.decode(str(accessToken), config('SECRET_KEY'), algorithms=["HS256"])
 
-    @__userBreaker
-    def get_token(self):
-        """
-        Función que obtiene el token de la API de chat.
-        """
-        params = {"username": config('USERNAME_DATA'), "password": config('PASSW_DATA')}
-        params_response = requests.post("http://chatservice:7000/api/token/", data=params) # TODO: cambiar por chat_url no funciona, de momento lo dejo hardcodeado.
-        return params_response.json()
+        # add payload here!!
+        decodeJTW['username'] = user.username
+        decodeJTW['email'] = user.email
+
+        encoded = jwt.encode(decodeJTW, config('SECRET_KEY'), algorithm="HS256")
+
+        return {
+            'refresh': str(refresh),
+            'access': str(encoded),
+        }
         
