@@ -15,9 +15,12 @@ services:
     - "traefik.http.routers.chatservice.rule=Host(`${NAME}.localhost`)" # && PathPrefix(`/ws`)"
     - "traefik.http.routers.chatservice.tls=true"
     - "traefik.http.services.chatservice.loadbalancer.server.port=7000"
-    - "traefik.http.routers.chatservice.entrypoints=http,https,redis,mysql"
+    - "traefik.http.routers.chatservice.entrypoints=http,https,redis,mysql,wss"
     - "traefik.http.services.chatservice.loadbalancer.sticky.cookie=true"
 
+    #Circuit Breaker
+    - "traefik.http.middlewares.chatservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.30 || NetworkErrorRatio() > 0.10"
+    
 networks:
   red:
     external: true

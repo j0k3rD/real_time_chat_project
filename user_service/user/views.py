@@ -9,12 +9,14 @@ import requests
 from user.services.circuit_breaker import UserListener
 from user.services.user_service import UserService
 from user.functions import Functions
+from django.views.decorators.cache import cache_page
 
 userBreaker = pybreaker.CircuitBreaker(fail_max=5, reset_timeout=60, listeners=[UserListener()])
 functions = Functions()
 userService = UserService()
 
-@userBreaker
+@cache_page(60 * 5)
+@userBreaker #! NO ES NECESARIO SI SE USA CACHE
 def user_login(request):
     """
     Función que permite el login de un usuario.
@@ -42,7 +44,8 @@ def user_login(request):
         form = AuthenticationForm()
         return render(request, 'login.html', {'form': form})   
 
-@userBreaker
+@cache_page(60 * 5)
+@userBreaker #! NO ES NECESARIO SI SE USA CACHE
 def register(request):
     """
     Función que permite el registro de un usuario.

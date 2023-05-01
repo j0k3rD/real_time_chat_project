@@ -106,6 +106,7 @@ DATABASES = {
     },
 }
 
+# Cache and Channels, para el manejo de los sockets
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
@@ -115,6 +116,16 @@ CHANNEL_LAYERS = {
     },
 }
 
+# Para el manejo de los datos en cache
+# CACHES = {
+#     'default': {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": config('REDIS_CACHE_URL'),
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         }
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

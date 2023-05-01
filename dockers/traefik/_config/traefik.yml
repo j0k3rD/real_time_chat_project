@@ -40,30 +40,33 @@ entryPoints:
   wss:
     address: ":7000"
 
-# http:
-#   # Agrega el middleware para WebSocket
-#   middlewares:
-#     websocket:
-#       headers:
-#         connectionUpgrade:
-#           value: "websocket"
-#         upgrade:
-#           value: "websocket"
 
-  # # Agrega la definición del router para WebSocket
-  # routers:
-  #   websocket:
-  #     entryPoints:
-  #       - ws
-  #     rule: "PathPrefix(`/ws`)"
-  #     service: websocket-service
-  #     middlewares:
-  #       - websocket
+# Configuración del Circuit Breaker
+http:
+  middlewares:
+    chatservice-cb:
+      circuitBreaker:
+        expression: "ResponseCodeRatio(500, 600, 0, 600) > 0.30 || NetworkErrorRatio() > 0.10"
+        #* Activa el disyuntor cuando el 30% de las solicitudes devuelven un código de estado 5XX, o cuando la proporción de errores de red alcanza el 10%.
+    userservice-cb:
+      circuitBreaker:
+        expression: "ResponseCodeRatio(500, 600, 0, 600) > 0.30 || NetworkErrorRatio() > 0.10"
 
-  # # Agrega la definición del servicio para WebSocket
-  # services:
-  #   websocket-service:
-  #     loadBalancer:
-  #       passHostHeader: true
-  #       servers:
-  #         - url: "chat.chat.localhost"
+  services:
+    chatservice:
+      loadBalancer:
+        servers:
+          - url: "http://chat.chat.localhost"
+      middlewares:
+        - chatservice-cb
+    memcached:
+      loadBalancer:
+        servers:
+          - url: "http://memcached:11211"
+
+    userservice:
+      loadBalancer:
+        servers:
+          - url: "http://user.chat.localhost"
+      middlewares:
+        - userservice-cb

@@ -2,7 +2,7 @@ version: '3.3'
 services:
     userservice:
         # container_name: userservice
-        image: userservice:v0.4.0
+        image: userservice:v0.5.0
 
         networks:
             - red
@@ -16,8 +16,11 @@ services:
             - "traefik.enable=true"
             - "traefik.http.routers.userservice.rule=Host(`${NAME}.localhost`)"
             - "traefik.http.services.userservice.loadbalancer.server.port=9000"
-            # - "traefik.http.routers.chatservice.entrypoints=http,https,mysql"
+            - "traefik.http.routers.userservice.entrypoints=http,https,mysql,redis"
             - "traefik.http.routers.userservice.tls=true"
+
+            #Configuracion Circuit Breaker
+            - "traefik.http.middlewares.userservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.30 || NetworkErrorRatio() > 0.10"
 
 networks:   
     red:
