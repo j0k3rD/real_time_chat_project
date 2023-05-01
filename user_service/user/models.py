@@ -35,7 +35,7 @@ class UserManager(BaseUserManager):
         """
         user = self.create_user(
             username,
-            "admin@admin.com",
+            "admin1@admin1.com",
             password,
         )
         user.admin = True

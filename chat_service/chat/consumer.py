@@ -67,8 +67,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             if message != '':
                 chat = Message(
                     message=message,
-                    user_id=username,
-                    username=user_id,
+                    user_id=user_id,
+                    username=username,
                     group=group
                 )
                 await database_sync_to_async(chat.save)()

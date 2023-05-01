@@ -2,7 +2,7 @@ version: '3.3'
 services:
     userservice:
         # container_name: userservice
-        image: userservice:v0.5.0
+        image: userservice:v0.6.0
 
         networks:
             - red
