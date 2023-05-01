@@ -31,8 +31,7 @@
 
         <textarea class="form-control chat_box" id="chat-log" rows="3">
           {% for chat in chats %}
-              {{ chat.message.username }}
-              {{ chat.message }}
+              {{ chat.username }}: {{ chat.message }}
           {% empty %}
               No chats yet.
           {% endfor %}
@@ -99,8 +98,10 @@
       // Recibir datos del chat
       wss.onmessage = function(e) {
           const data = JSON.parse(e.data)
+          const username = JSON.parse(document.getElementById('username').textContent)
+
           console.log(data)
-          document.getElementById('chat-log').innerHTML += (data.message + '\n')
+          document.getElementById('chat-log').innerHTML += `${username}: ${data.message}\n`;
       } 
 
       // Desconectar del grupo
@@ -112,6 +113,7 @@
       document.getElementById('chat-form').onsubmit = function(e) {
           e.preventDefault()
           const message = document.getElementById('form_message').value
+          const username = JSON.parse(document.getElementById('username').textContent)
           
           if (message=='') {
             alert('Please Enter a Message.')
