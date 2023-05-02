@@ -77,7 +77,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     self.group_name,
                     {
                         'type': 'chat.message',
-                        'message': message
+                        'message': message,
+                        'username': username
                     }
                 )
         except: 
@@ -95,5 +96,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         '''
         print('Event..', event)
         await self.send(text_data = json.dumps({
-            'message':event['message']
+            'message':event['message'],
+            'username':event['username']
         }))

@@ -98,10 +98,10 @@
       // Recibir datos del chat
       wss.onmessage = function(e) {
           const data = JSON.parse(e.data)
-          const username = JSON.parse(document.getElementById('username').textContent)
+          // const username = JSON.parse(document.getElementById('username').textContent)
 
           console.log(data)
-          document.getElementById('chat-log').innerHTML += `${username}: ${data.message}\n`;
+          document.getElementById('chat-log').innerHTML += `${data.username}: ${data.message}\n`;
       } 
 
       // Desconectar del grupo
@@ -130,4 +130,3 @@
 
   </body>
 </html>
-
