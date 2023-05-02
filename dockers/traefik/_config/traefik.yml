@@ -56,7 +56,21 @@ http:
     chatservice:
       loadBalancer:
         servers:
-          - url: "http://chat.chat.localhost"
+          url: "http://chat.chat.localhost"
+          #* Seteamos las Replicas a 1 para que no se cree un contenedor de más
+          minReplicas: 2
+          maxReplicas: 5
+          #* Seteamos el CPU a 50% para que no consuma más de lo necesario
+          cpu:
+              usage:
+                target: 50
+              requests:
+                min: 2
+                max: 4
+              limits:
+                min: 3
+                max: 6
+
       middlewares:
         - chatservice-cb
     memcached:
@@ -67,6 +81,19 @@ http:
     userservice:
       loadBalancer:
         servers:
-          - url: "http://user.chat.localhost"
+          url: "http://user.chat.localhost"
+          #* Seteamos las Replicas a 1 para que no se cree un contenedor de más
+          minReplicas: 2
+          maxReplicas: 5
+          #* Seteamos el CPU a 50% para que no consuma más de lo necesario
+          cpu:
+              usage:
+                target: 50
+              requests:
+                min: 2
+                max: 4
+              limits:
+                min: 3
+                max: 6
       middlewares:
         - userservice-cb

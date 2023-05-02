@@ -11,6 +11,12 @@ services:
         env_file:
             - .env
         restart: always
+        # #Configuracion Autoscaling de Traefik
+        # deploy:
+        #     replicas: 2
+        #     resources:
+        #         limits:
+                    cpus: "0.5"
 
         labels:
             - "traefik.enable=true"
@@ -18,6 +24,8 @@ services:
             - "traefik.http.services.userservice.loadbalancer.server.port=9000"
             - "traefik.http.routers.userservice.entrypoints=http,https,mysql,redis"
             - "traefik.http.routers.userservice.tls=true"
+            #Configuracion Autoscaling de Traefik
+            - "traefik.autoscale=true"
 
             #Configuracion Circuit Breaker
             - "traefik.http.middlewares.userservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.30 || NetworkErrorRatio() > 0.10"
