@@ -15,15 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import user_login, health_check, register
+from .views import user_login, health_check, register, refresh_token, remove_token
 from django.conf import settings
 from django.conf.urls.static import static
-#from rest_framework_simplejwt import views as jwt_views
 
 urlpatterns = [
     path('login/', user_login, name='login'),
     path('health_check/', health_check, name='health_check'),
     path('register/', register, name='register'),
-    #path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'), El token se genera interno.
-    #path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/refresh/', refresh_token, name='remove_token'),
+    path('api/blacklist/', remove_token, name='refresh_token'),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

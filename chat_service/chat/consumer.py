@@ -2,7 +2,6 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from .models import Message, Group
 from channels.db import database_sync_to_async
-from .functions import Functions
 
 #! APLICAR PATRON REPOSITORIO 
 class ChatConsumer(AsyncWebsocketConsumer):

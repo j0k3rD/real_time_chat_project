@@ -1,18 +1,20 @@
 from rest_framework_simplejwt.tokens import RefreshToken
 from decouple import config
 import jwt
+from .services.user_service import UserService
 
-class Functions:
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+    accessToken = refresh.access_token
 
-    def get_tokens_for_user(self, user):
-        refresh = RefreshToken.for_user(user)
-        accessToken = refresh.access_token
+    encoded = insert_claims(accessToken, user.get_username(), user.get_email())
 
-        decodeJTW = jwt.decode(str(accessToken), config('SECRET_KEY'), algorithms=["HS256"])
-
-        # add payload here!!
-        decodeJTW['username'] = user.username
-        decodeJTW['email'] = user.email
+    return {
+        'refresh': str(refresh),
+        'access_token': str(encoded),
+    }
+    
+def remove_tokens(refresh_token):
 
         encoded = jwt.encode(decodeJTW, config('SECRET_KEY'), algorithm="HS256")
 
@@ -20,4 +22,4 @@ class Functions:
             'refresh': str(refresh),
             'access': str(encoded),
         }
-        
+            return encoded

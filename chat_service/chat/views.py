@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from decouple import config
 import pybreaker
 from chat.services.circuit_breaker import ChatListener
-from .functions import Functions
+from . import functions
 from .services.group_service import GroupService
 from .services.message_service import MessageService
 
@@ -17,25 +17,37 @@ messageService = MessageService()
 
 @chatBreaker
 def get_token_page(request):
-    token = request.GET.get('token', None)
+    refresh = request.GET.get('refresh', None)
     user_url = config('USER_URL')
 
-    if token is not None:
+    if refresh is not None:
+        #try:
+        token = functions.refresh_token(refresh)
+        access_token = token.json()['access_token']
+        refresh = token.json()['refresh']
+
         response = HttpResponseRedirect("/menu/")
-        response = Functions.set_access_token(response, token)
+        print(type(response))
+        response = functions.set_access_token(response, access_token)
+        response = functions.set_refresh_token(response, refresh)
         return response
-    else:
-        return HttpResponseRedirect(user_url + "/login/", {'error': 'Invalid token.'})
+        #except:
+        #    return HttpResponseRedirect(user_url + "/login/", {'error': 'Invalid token.'})
+    #else:
+    #    return HttpResponseRedirect(user_url + "/login/", {'error': 'Invalid token.'})
 
 @chatBreaker
 def get_main_page(request):
     if request.method == 'POST':
+        response = functions.blacklist_refresh_token(functions.get_refresh_token(request))
         response = HttpResponseRedirect(config('USER_URL') + "/login/")
-        return Functions.del_access_token(response)	
+        response = functions.del_refresh_token(response)
+        response = functions.del_access_token(response)
+        return response
     else:
         user_url = config('USER_URL')
         chat_url = config('CHAT_URL')
-        token = Functions.autenticate(Functions.get_access_token(request))
+        token = functions.autenticate(functions.get_access_token(request))
         if token is not None:
             context = {
                 'groups': groupService.get_all(),
@@ -53,7 +65,7 @@ def get_main_page(request):
 def get_group(request, group_id):
     user_url = config('USER_URL')
     chat_url = config('CHAT_URL')
-    token = Functions.autenticate(Functions.get_access_token(request))
+    token = functions.autenticate(functions.get_access_token(request))
     if token is not None:
         group = groupService.get_by_id(group_id)
         messages = messageService.get_by_group_id_order_by_date(groupModel = group)
@@ -69,7 +81,7 @@ def get_group(request, group_id):
 
         return render(request, 'group.html', context)
     else:
-        return HttpResponseRedirect(user_url + "/login/")
+        return HttpResponseRedirect(user_url + "/login/", {'error': 'Invalid token.'})
 
 def health_check(request):
     '''

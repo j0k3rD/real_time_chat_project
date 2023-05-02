@@ -8,11 +8,11 @@ import pybreaker
 import requests
 from user.services.circuit_breaker import UserListener
 from user.services.user_service import UserService
-from user.functions import Functions
+from . import functions
 from django.views.decorators.cache import cache_page
+from django.views.decorators.csrf import csrf_exempt
 
 userBreaker = pybreaker.CircuitBreaker(fail_max=5, reset_timeout=60, listeners=[UserListener()])
-functions = Functions()
 userService = UserService()
 
 @cache_page(60 * 5)
@@ -34,7 +34,7 @@ def user_login(request):
         if userService.check_password(password, user.password):
             token = functions.get_tokens_for_user(user)
             try:
-                response = HttpResponseRedirect(chat_url + "/token/" + "?token={}".format(token["access"]), {'user_url': user_url})
+                response = HttpResponseRedirect(chat_url + "/token/" + "?refresh={}".format(token["refresh"]), {'user_url': user_url})
             except:
                 response = render(request, 'login.html', {'error': 'Error with the chat service.'})
             return response
@@ -94,3 +94,34 @@ def health_check(request):
         return JsonResponse(data, status=200)
     else:
         return JsonResponse(data, status=500)
+
+@csrf_exempt
+def remove_token(request):
+    '''
+    Función que remueve el token de la blacklist
+    '''
+    if request.method == 'POST':
+        refresh_token = request.POST.get('refresh_token')
+        if functions.remove_tokens(refresh_token):
+            return JsonResponse({'message': 'Token removed.'}, status=200)
+        else:
+            return JsonResponse({'message': 'Token not removed.'}, status=500)
+    else:
+        return JsonResponse({'message': 'Method not allowed.'}, status=405)
+
+@csrf_exempt
+def refresh_token(request):
+    '''
+    Función que refresca el token
+    '''
+    if request.method == 'POST':
+        refresh_token = request.POST.get('refresh_token')
+        access_token = functions.refresh_token(refresh_token)
+        if access_token:
+            return JsonResponse({'access_token': access_token["access_token"],
+                                 'refresh': access_token["refresh"]
+                                 }, status=200)
+        else:
+            return JsonResponse({'message': 'Token not refreshed.'}, status=500)
+    else:
+        return JsonResponse({'message': 'Method not allowed.'}, status=405)
