@@ -46,8 +46,9 @@ http:
   middlewares:
     chatservice-cb:
       circuitBreaker:
-        expression: "ResponseCodeRatio(500, 600, 0, 600) > 0.30 || NetworkErrorRatio() > 0.10"
+        expression: "ResponseCodeRatio(500, 600, 0, 600) > 0.10 || NetworkErrorRatio() > 0.10 || LatencyAtQuantileMS(50.0) > 100"
         #* Activa el disyuntor cuando el 30% de las solicitudes devuelven un código de estado 5XX, o cuando la proporción de errores de red alcanza el 10%.
+        #* La latencyAtQuantileMS(50.0) > 100 expresión activa el disyuntor cuando el 50% de las solicitudes tardan más de 100 ms en completarse.
     userservice-cb:
       circuitBreaker:
         expression: "ResponseCodeRatio(500, 600, 0, 600) > 0.30 || NetworkErrorRatio() > 0.10"

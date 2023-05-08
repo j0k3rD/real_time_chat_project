@@ -13,9 +13,6 @@ services:
     #Configuracion Autoscaling de Traefik
     # deploy:
     #     replicas: 1
-    #     resources:
-    #         limits:
-    #             cpus: "0.5"
 
     labels:
     - "traefik.enable=true"
@@ -29,7 +26,7 @@ services:
     - "traefik.autoscale=true"
 
     #Circuit Breaker
-    - "traefik.http.middlewares.chatservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.30 || NetworkErrorRatio() > 0.10"
+    - "traefik.http.middlewares.chatservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.10 || NetworkErrorRatio() > 0.10 || LatencyAtQuantileMS(50.0) > 100"
     
 networks:
   red:

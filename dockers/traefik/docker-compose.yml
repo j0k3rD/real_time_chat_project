@@ -21,6 +21,9 @@ services:
           - "traefik.http.routers.traefik=true"
         networks:
             - red
+              # alies:
+                # - user.chat.localhost
+                # - chat.chat.localhost #Se agregan para no usar un servidor DNS
 
 networks:
     red:
