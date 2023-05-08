@@ -1,0 +1,24 @@
+version: "3.3"
+
+services:
+  consul:
+    # container_name: redis
+    image: consul:1.15
+    restart: always
+    volumes:
+      - ./server1.json:/consul/config/server1.json
+      - ./certs/:/consul/config/certs/
+    command: "agent -bootstrap-expect=3"
+    networks:
+      - red
+    labels:
+        - "traefik.enable=true"
+        - "traefik.tcp.routers.consul.rule=HostSNI(`*`)"
+        - "traefik.tcp.services.consul.loadbalancer.server.port=8500"
+        - "traefik.tcp.routers.consul.entrypoints=consul"
+        #- "traefik.tcp.routers.consul.tls=true"  #* Sirve para hacer un handshake con el proxy. Probar primero sin hacerlo.
+
+networks:
+    red:
+      external: true
+      driver: bridge
