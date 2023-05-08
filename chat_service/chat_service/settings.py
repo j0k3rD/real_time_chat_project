@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'channels',
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_consul',
+    'ConsulService',
 ]
 
 MIDDLEWARE = [
@@ -60,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_consul.middleware.ServiceRegistrationMiddleware',
 ]
 
 ROOT_URLCONF = 'chat_service.urls'
@@ -76,7 +79,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.static',
-                # 'chat.context_processors.static_path',
             ],
         },
     },
@@ -86,6 +88,31 @@ ASGI_APPLICATION = 'chat_service.asgi.application'
 
 WSGI_APPLICATION = 'chat_service.wsgi.application'
 
+# Consul configuration
+CONSUL_AGENT_ADDRESS = config('CONSUL_AGENT_ADDRESS')
+CONSUL_AGENT_PORT = config('CONSUL_AGENT_PORT')
+CONSUL_CHECK_URL = config('CONSUL_CHECK_URL')
+CONSUL_CHECK_INTERVAL = config('CONSUL_CHECK_INTERVAL')
+CONSUL_SERVICE_NAME = config('CONSUL_SERVICE_NAME')
+CONSUL_SERVICE_ADDRESS = config('CONSUL_SERVICE_ADDRESS')
+SERVICE_PORT = config('SERVICE_PORT')
+
+# INFORMATION FOR CONSUL REGISTRATION
+
+# CONSUL_AGENT_ADDRESS Consul agent server's address
+
+# CONSUL_AGENT_PORT Consul agent server's port
+
+# CONSUL_CHECK_URL API on service used by consul server to check it's status
+
+# CONSUL_CHECK_INTERVAL Status check interval
+
+# CONSUL_SERVICE_NAME Local service name
+
+# CONSUL_SERVICE_ADDRESS Local service address
+
+# SERVICE_PORT Local service port
+
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -94,11 +121,6 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': config('DATABASE_NAME'),
-    #     'NAME': os.path.join(
-    #     os.path.dirname(os.path.dirname(PROJECT_ROOT)),
-    #     'user_service', 
-    #     'chat_real_time.db'
-    # ),
         'USER': config('DATABASE_USER'),
         'PASSWORD': config('DATABASE_PASSWORD'),
         'HOST': config('DATABASE_HOST'),
@@ -115,17 +137,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
-
-# Para el manejo de los datos en cache
-# CACHES = {
-#     'default': {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": config('REDIS_CACHE_URL'),
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#         }
-#     }
-# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -144,12 +155,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-# # Configuración de SimpleJWT
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=30),
-#     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
-# }
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -180,10 +185,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static'),
-# ]
-#
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 

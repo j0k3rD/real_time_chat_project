@@ -9,3 +9,4 @@ pytest-django==4.5.2
 distutils-pytest==0.2.0
 djangorestframework-simplejwt==5.2.2
 pybreaker==1.0.1
+django-consul==0.4.0
