@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'channels',
     'rest_framework',
     'rest_framework_simplejwt',
-    'django_consul',
     'ConsulService',
 ]
 
@@ -62,7 +61,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_consul.middleware.ServiceRegistrationMiddleware',
 ]
 
 ROOT_URLCONF = 'chat_service.urls'
@@ -95,7 +93,7 @@ CONSUL_CHECK_URL = config('CONSUL_CHECK_URL')
 CONSUL_CHECK_INTERVAL = config('CONSUL_CHECK_INTERVAL')
 CONSUL_SERVICE_NAME = config('CONSUL_SERVICE_NAME')
 CONSUL_SERVICE_ADDRESS = config('CONSUL_SERVICE_ADDRESS')
-SERVICE_PORT = config('SERVICE_PORT')
+CONSUL_SERVICE_PORT = config('CONSUL_SERVICE_PORT')
 
 # INFORMATION FOR CONSUL REGISTRATION
 
