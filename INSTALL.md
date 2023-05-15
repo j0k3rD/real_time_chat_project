@@ -48,22 +48,6 @@ Y dejar runeando las tres imagenes con docker compose, que se encuentra dentro d
 
 ## Chat Service
 
-### Crear Super User en Django: 
-
-Para crear un super usuario y poder editar los grupos, abrir el archivo **entrypoint_superuser.sh** y cambiar el contenido en
-
-```
-#!/bin/bash
-
-# Create superuser
-export DJANGO_SUPERUSER_PASSWORD=XXXXXXX # Contraseña del super usuario, importante no olvidar
-export DJANGO_SUPERUSER_USERNAME=XXXXXXX # Nombre de super usuario, importante, no olvidar
-export DJANGO_SUPERUSER_EMAIL=XXXXXXX 	 # Email del superusuario, esto no es muy necesario
-python3 manage.py createsuperuser --noinput
-```
-
-Y luego cambiar el nombre de **entrypoint.sh** a **entrypoint1.sh** y de **entrypoint_superuser.sh** a **entrypoint.sh**, seguir todos los pasos de abajo crear imagen y runear la imagen, luego parar el container, eliminar la imagen y cambiar de nombre **entrypoint1.sh** a **entrypoint.sh**, generar imagen y correrlo. (Si hay una mejor manera de hacer esto, cambiarlo)
-
 ### Crear imagen del ChatService en Docker:
 
 Antes de crear la imagen, debemos configurar las variables de entorno, hay que ir a **/dockers/chat_service**, luego duplicar y cambiar de nombre de **.env-example** a **.env** dentro se encuentra lo siguiente:
@@ -147,49 +131,24 @@ y verificar si la imagen **chat_service** esta corriendo, junto a **traefik, mys
 
 ## User Service
 
-### Configurar variables locales (dotenv) y configurar la base de datos (Esto es en caso de querer hacer testeos desde una computadora local):
+### Crear Super User en Django: 
 
-Primero debemos configurar la base de datos y crear los modelos necesarios para funcionar con el **user_service**, por lo que nos vamos a la carpeta **/user_service/user_service**, luego duplicamos y cambiamos el nombre de **env-example** a **env** y cambiar los valores dentro por los siguientes:
+Para crear un super usuario y poder editar los grupos, abrir el archivo **entrypoint.sh** y cambiar el contenido descomentando la parte de crear usuario y comentando la parte de runear el servicio
 
 ```
-# Key de Django https://docs.djangoproject.com/en/4.1/topics/signing/
-SECRET_KEY  =  ''
+#!/bin/bash
 
-# DATABASE CONFIGURATION
-# Nombre de la base de datos en mysql.
-DATABASE_NAME  =  'chat_real_time'
-# Nombre de usuario secundario de mysql.
-DATABASE_USER  =  ''
-# Contraseña de usuario secundario de mysql.
-DATABASE_PASSWORD  =  ''
-# IP de mysql corriendo en docker, se puede obtener con el siguiente comando
-(docker network inspect bridge --format='{{json .Containers}}' | jq -r '.[] | .Name + " " + .IPv4Address').
-DATABASE_HOST  =  'xxx.xxx.xxx.xxx'
-DATABASE_PORT  =  '3306'
+# Create superuser
+export DJANGO_SUPERUSER_USERNAME=XXXXXXX # Nombre de super usuario, importante, no olvidar
+export DJANGO_SUPERUSER_PASSWORD=XXXXXXX # Contraseña del super usuario, importante no olvidar
+python3 manage.py createsuperuser --noinput
 
-# REDIS CONFIGURATION
-# IP de redis corriendo en docker.
-REDIS_HOST  =  'xxx.xxx.xxx.xxx'
-REDIS_PORT  =  '6378'
-
-# TEMPLATES CONFIGURATION
-# Utilizado para redireccionar los estilos estaticos y templates.
-STATIC_PATH  =  "/user_service/chat/static/"
-
-# CHAT MICROSERVICE CONFIGURATION
-CHAT_URL  =  'http://chat.chat.localhost'
-
-# USER MICROSERVICE CONFIGURATION
-USER_URL  =  'http://user.chat.localhost'
-
-# ADMIN TOKEN CONFIGURATION
-# Nombre del admin de Django que creamos anteriormente en el ChatService
-USERNAME_DATA = ''
-# Contraseña del admin de Django que creamos anteriormente en el ChatService
-PASSW_DATA = ''
+# Run server
+#python3 manage.py migrate
+#python3 manage.py runserver 0.0.0.0:9000
 ```
 
-Ya con eso, tenemos nuestra base de datos **chat_real_time** dentro de mysql creado y configurado correctamente para funcionar con **UserService**! 
+Y luego generar la imagen *(explicado debajo)* y ejecutarlo, debe decir en la terminal que el **superuser ha sido creado**. Luego dejas comentado la parte de crear el superusuario y descomentas la de ejecutar el servicio. **Recuerda que debes volver a generar la imagen**
 
 ### Crear imagen del UserService en Docker:
 
@@ -231,6 +190,10 @@ CHAT_URL = 'http://chat.chat.localhost'
 # USER MICROSERVICE CONFIGURATION
 # IP del microservicio de usuario en traefik.
 USER_URL = 'http://user.chat.localhost'
+
+# REDIS CONFIGURATION
+# IP del redis en Docker.
+REDIS_CACHE_URL = 'redis://redis:6379/1'
 ```
 
 Una ves creado el **.env**, para crear una imagen en Docker debemos entrar en la carpeta **dockers/user_service** y abrir el archivo **docker-compose.yml** con un editor cualquiera y verificar que versión de chat_service se ejecutara, en nuestro caso, tenemos:
@@ -287,3 +250,13 @@ Y luego creado un nuevo grupo siguiendo el ejemplo de la siguientes imágenes:
 
 Ya con el grupo creado podemos ingresar a la página [user.chat.localhost/login](https://user.chat.localhost/login), registrarse con una cuenta, luego loguearse, entrar al chat que creamos anteriormente y escribir en el chat. 
 > Tener en cuenta que el **Admin**, es el único que puede crear y eliminar grupos desde [chat.chat.localhost/admin](https://chat.chat.localhost/admin) utilizando el ejemplo anterior de crear un grupo.
+
+## Posibles errores y soluciones:
+
+### home/djangoapp/entrypoint.sh no such file or directory:
+En caso de encontrarte el error de **/entrypoint.sh** no encontrado el archivo o directorio, es un problema de permisos, la solución depende segun sistema operativo:
+- Windows: En caso del sistema operativo Windows, es eliminar y volver a crear el archivo **/entrypoint.sh** dentro del **user_service** o **chat_service** segun que contenedor este dando el error. 
+- Linux: En caso del sistema operativo Linux, la solución es darle permisos por **chmod** al **/entrypoint.sh** dentro del **user_service** o **chat_service** segun que contenedor este dando el error.
+ > chmod 777 entrypoint.sh
+
+**Recuerda que al hacer estos cambios, hay que volver a generar la imagen y ejecutarlo en Docker para arreglar el problema**
