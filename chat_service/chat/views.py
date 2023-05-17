@@ -62,6 +62,29 @@ def get_main_page(request):
             return HttpResponseRedirect(user_url + "/login/", {'error': 'Invalid token.'})
 
 @chatBreaker
+def get_group_chat(request, group_id):
+    user_url = config('USER_URL')
+    chat_url = config('CHAT_URL')
+    token = functions.autenticate(functions.get_access_token(request))
+    if token is not None:
+        group = groupService.get_by_id(group_id)
+        messages = messageService.get_by_group_id_order_by_date(groupModel = group)
+
+        context = {
+            'group': group,
+            'chats': messages,
+            'chat_url': chat_url,
+            'user_id': token['user_id'],
+            'username': token['username'],
+            'email': token['email'],
+            'current_user': request.user,
+        }
+
+        return render(request, 'group_chat.html', context)
+    else:
+        return HttpResponseRedirect(user_url + "/login/", {'error': 'Invalid token.'})
+
+@chatBreaker
 def get_group(request, group_id):
     user_url = config('USER_URL')
     chat_url = config('CHAT_URL')
