@@ -1,14 +1,21 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000; /* Ajusta este valor según sea necesario */
+  }  
+
 body{
     background-color: #f4f7f6;
-    margin-top:20px;
+    margin-top: 100px;
 }
 
 /* .container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-}   */
+    min-height: 80vh;
+} */
 
 .card {
     background: #fff;
@@ -153,7 +160,9 @@ body{
 }
 
 .chat .chat-history .my-message {
-    background: #efefef
+    background: #efefef;
+    float: none;
+    clear: both;
 }
 
 .chat .chat-history .my-message:after {
@@ -172,7 +181,8 @@ body{
 
 .chat .chat-history .other-message {
     background: #e8f1f3;
-    text-align: right
+    float: left;
+    clear: both
 }
 
 .chat .chat-history .other-message:after {
@@ -274,3 +284,17 @@ body{
     border-right: none;
 }
 
+.message_box {
+    max-height: 400px;
+    overflow: auto; 
+}
+
+.message-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.message-item {
+    margin-bottom: 10px;
+}

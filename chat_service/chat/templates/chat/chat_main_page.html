@@ -4,41 +4,6 @@
 <link rel="stylesheet" href="{% static 'style/styles.css' %}">
 {% endblock %}
 {% block content %}
-      <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light header">
-          <div class="container-fluid">
-            <a class="navbar-brand" href="{{chat.url}}/menu/">
-
-              <img src="{% static 'img/live-chat-logo.png' %}" alt="" width="5%" height="auto" class="d-inline-block align-text-center">
-              Real time chat
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavDropdown">
-              <ul class="navbar-nav ms-auto nav">
-                <li class="nav-item dropdown" style="margin-right: 10rem;">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    {{ username }}
-                  </a>
-                  <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <li><a class="dropdown-item" href="#">Perfil</a></li>
-                    <form method="POST" action=>
-                      {% csrf_token %}
-                      <li><button type="submit" class="dropdown-item" >Desconectarse</button></li>
-                    </form>
-                  </ul>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-        </nav>
-        <!-- <div class="header-img">
-          
-          <img src="{% static 'img/chat-gpt.jpg' %}" alt="" style="max-width: auto; height: 100vh; width: 100%;">
-        </div> -->
-      </header>
       <div class="container">
         <div class="row">
           <div class="col-sm-12 d-flex justify-content-center align-items-center vh-100">

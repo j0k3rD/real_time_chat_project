@@ -21,7 +21,6 @@ def get_token_page(request):
     user_url = config('USER_URL')
 
     if refresh is not None:
-        #try:
         token = functions.refresh_token(refresh)
         access_token = token.json()['access_token']
         refresh = token.json()['refresh']
@@ -31,10 +30,6 @@ def get_token_page(request):
         response = functions.set_access_token(response, access_token)
         response = functions.set_refresh_token(response, refresh)
         return response
-        #except:
-        #    return HttpResponseRedirect(user_url + "/login/", {'error': 'Invalid token.'})
-    #else:
-    #    return HttpResponseRedirect(user_url + "/login/", {'error': 'Invalid token.'})
 
 @chatBreaker
 def get_main_page(request):
