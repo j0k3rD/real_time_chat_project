@@ -66,6 +66,7 @@ def get_group_chat(request, group_id):
         messages = messageService.get_by_group_id_order_by_date(groupModel = group)
 
         context = {
+            'groups': groupService.get_all(),
             'group': group,
             'chats': messages,
             'chat_url': chat_url,

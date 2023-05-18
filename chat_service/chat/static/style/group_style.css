@@ -286,7 +286,9 @@ body{
 
 .message_box {
     max-height: 400px;
-    overflow: auto; 
+    /* overflow: auto;  */
+    overflow-y: scroll;
+    scroll-behavior: smooth;
 }
 
 .message-list {

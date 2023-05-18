@@ -9,18 +9,6 @@
 {% endblock %}
 {% block content %}
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-<!-- <div>
-    <header>
-        <nav class="navbar navbar-light bg-light sticky-top">
-            <div class="container-fluid">
-              <a class="navbar-brand" href="{{chat.url}}/menu/">
-                <img src="{% static 'img/live-chat-logo.png' %}" alt="" width="80" height="60" class="d-inline-block align-text-center">
-                Real time chat
-              </a>
-            </div>
-          </nav>
-    </header>
-</div> -->
 <br>
 <div class="container">
     <div class="row clearfix">
@@ -34,68 +22,43 @@
                         <input type="text" class="form-control" placeholder="Search...">
                     </div>
                     <ul class="list-unstyled chat-list mt-2 mb-0">
-                    <li class="clearfix">
-                    <img src="{% static 'img/group-chat-1.png' %}" alt="avatar">
-                    <div class="about">
-                    <div class="name">Group</div>
-                    <div class="status"> <i class="fa fa-circle online"></i> 5 members online </div>
-                    </div>
-                    </li>
-                    <li class="clearfix active">
-                    <img src="{% static 'img/group-chat-1.png' %}" alt="avatar">
-                    <div class="about">
-                    <div class="name">{{ group.name }}</div>
-                    <div class="status"> <i class="fa fa-circle online"></i>2 members online </div>
-                    </div>
-                    </li>
-                    <li class="clearfix">
-                    <img src="{% static 'img/group-chat-1.png' %}" alt="avatar">
-                    <div class="about">
-                    <div class="name">Group</div>
-                    <div class="status"> <i class="fa fa-circle offline"></i> offline </div>
-                    </div>
-                    </li>
-                    <li class="clearfix">
-                    <img src="{% static 'img/group-chat-1.png' %}" alt="avatar">
-                    <div class="about">
-                    <div class="name">Group</div>
-                    <div class="status"> <i class="fa fa-circle offline"></i> offline </div>
-                    </div>
-                    </li>
-                    <li class="clearfix">
-                    <img src="{% static 'img/group-chat-1.png' %}" alt="avatar">
-                    <div class="about">
-                    <div class="name">Group</div>
-                    <div class="status"> <i class="fa fa-circle offline"></i> offline </div>
-                    </div>
-                    </li>
+                        {% for gp in groups %}
+                            <li class="clearfix">
+                                <img src="{% static 'img/group-chat-1.png' %}" alt="avatar">
+                                <div class="about">
+                                    <div class="name">{{gp.name}}</div>
+                                    <div class="status"> <i class="fa fa-circle online"></i> 5 members online </div>
+                                </div>
+                            </li>
+                        {% empty %}
+                            <p>No groups yet</p>
+                        {% endfor %}
                     </ul>
                 </div>
                 <div class="chat">
                     <div class="chat-header clearfix">
-                    <div class="row">
-                    <div class="col-lg-6">
-                    <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                    <img src="{% static 'img/group-chat-1.png' %}" alt="avatar">
-                    </a>
-                    <div class="chat-about">
-                    <h6 class="m-b-0">{{group.name}}</h6>
-                    <small>Active members: {{username}} </small>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                                    <img src="{% static 'img/group-chat-1.png' %}" alt="avatar">
+                                </a>
+                                <div class="chat-about">
+                                    <h6 class="m-b-0">{{group.name}}</h6>
+                                    <small>Active members: {{username}} </small>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 hidden-sm text-right">
+                                <a href="javascript:void(0);" class="btn btn-outline-secondary"><i class="fa fa-camera"></i></a>
+                                <a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>
+                                <a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>
+                                <a href="javascript:void(0);" class="btn btn-outline-warning"><i class="fa fa-question"></i></a>
+                            </div>
+                        </div>
                     </div>
-                    </div>
-                    <div class="col-lg-6 hidden-sm text-right">
-                    <a href="javascript:void(0);" class="btn btn-outline-secondary"><i class="fa fa-camera"></i></a>
-                    <a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>
-                    <a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>
-                    <a href="javascript:void(0);" class="btn btn-outline-warning"><i class="fa fa-question"></i></a>
-                    </div>
-                    </div>
-                    </div>
-                    <section class="message_box">
+                    <section class="message_box" id="message_box">
                         <div class="chat-history" id="chat-history">
-                            <ul class="message-list">
+                            <ul class="message-list" id="chat-log">
                                 {% for chat in chats %}
-                                    {% comment %} <p>ESTO ES CHAT.USERNAME: {{chat.username}}</p> {% endcomment %}
                                     {% if chat.username == username %}
                                         <li class="clearfix">
                                             <div class="message-data text-right">
@@ -108,7 +71,7 @@
                                     {% else %}
                                         <li class="clearfix">
                                             <div class="message-data">
-                                                <span class="message-data-time">10:12 AM, Today</span>
+                                                <span class="message-data-time">10:10 AM, Today</span>
                                                 <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
                                                 <span>{{ chat.username|capfirst }}:</span>
                                             </div>
@@ -166,24 +129,64 @@
     };
     
     // Recibir datos del chat
+    //    wss.onmessage = function(e) {
+    //        const data = JSON.parse(e.data);
+    //        document.getElementById('chat-log').innerHTML += `${data.username}: ${data.message}\n`;
+    //        // Hacer scroll hacia abajo para mostrar el último mensaje
+    //        document.getElementById('chat-log').scrollTop = document.getElementById('chat-log').scrollHeight;
+    //    };
+
+    // Recibir datos del chat
     wss.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        document.getElementById('chat-log').innerHTML += `${data.username}: ${data.message}\n`;
+        const chatLog = document.getElementById('chat-log');
+
+        console.log(data);
+
+        // Crea un nuevo elemento <li>
+        const li = document.createElement('li');
+        // Agrega la clase clearfix al elemento <li>
+        li.className = 'clearfix';
+
+        // Verifica si el remitente del mensaje es el usuario actual
+        if (data.username === username) {
+            // Agrega el contenido al elemento <li>
+            li.innerHTML = `
+                <div class="message-data text-right">
+                    <span class="message-data-time">10:10 AM, Today</span>
+                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                    <span>You:</span>
+                </div>
+                <div class="message other-message float-right">${data.message}</div>
+            `;
+        } else {
+            li.innerHTML = `
+                <div class="message-data">
+                    <span class="message-data-time">10:10 AM, Today</span>
+                    <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
+                    <span>${data.username}:</span>
+                </div>
+                <div class="message my-message">${data.message}</div>
+            `;
+        }
+    
+        // Imprime el elemento <li> en la consola
+        console.log('esto es li: ' + li);
+
+        // Agrega el <li> al inicio del contenedor
+        chatLog.insertAdjacentElement('afterbegin', li);
+    
+        // Imprime la altura del contenedor
+        console.log('esto es chatLog.scrollTop: ' + chatLog.scrollTop);
+
         // Hacer scroll hacia abajo para mostrar el último mensaje
-        document.getElementById('chat-log').scrollTop = document.getElementById('chat-log').scrollHeight;
+        chatLog.scrollTop = chatLog.scrollHeight;
     };
 
     // Desconectar del grupo
     wss.onclose = function(e) {
         console.log('Connection closed');
     };
-
-    // Funcion para actualizar el chat
-    function updateChat(message) {
-        document.getElementById('chat-log').innerHTML += `${message}`;
-        // Hacer scroll hacia abajo para mostrar el último mensaje
-        document.getElementById('chat-log').scrollTop = document.getElementById('chat-log').scrollHeight;
-    }
 
     // Enviar datos del chat
     document.getElementById('chat-form').onsubmit = function(e) {
@@ -203,9 +206,12 @@
 
         // Limpiar el campo de entrada después de enviar el mensaje
         document.getElementById('form_message').value = '';
-
-        // Actualizar el chat con el nuevo mensaje
-        updateChat(`${username}: ${message}`);
     };
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var messageBox = document.getElementById('message_box');
+        messageBox.scrollTop = messageBox.scrollHeight;
+      });     
 </script>
 {% endblock %}
