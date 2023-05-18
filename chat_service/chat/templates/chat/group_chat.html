@@ -80,7 +80,7 @@
                     </a>
                     <div class="chat-about">
                     <h6 class="m-b-0">{{group.name}}</h6>
-                    <small>Active members: {{chat.username}}, {{current_user}}</small>
+                    <small>Active members: {{username}} </small>
                     </div>
                     </div>
                     <div class="col-lg-6 hidden-sm text-right">
@@ -95,15 +95,26 @@
                         <div class="chat-history" id="chat-history">
                             <ul class="message-list">
                                 {% for chat in chats %}
-                                    <li class="message-item clearfix {% if chat.username == current_user %}my-message{% else %}other-message float-right{% endif %}">
-                                        <div class="message-data text-right">
-                                            <span class="message-data-time">10:10 AM, Today</span>
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                                        </div>
-                                        <div class="message-content">
-                                            {{ chat.message }}
-                                        </div>
-                                    </li>
+                                    {% comment %} <p>ESTO ES CHAT.USERNAME: {{chat.username}}</p> {% endcomment %}
+                                    {% if chat.username == username %}
+                                        <li class="clearfix">
+                                            <div class="message-data text-right">
+                                                <span class="message-data-time">10:10 AM, Today</span>
+                                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                                                <span>You:</span>
+                                            </div>
+                                            <div class="message other-message float-right"> {{ chat.message }} </div>
+                                        </li>
+                                    {% else %}
+                                        <li class="clearfix">
+                                            <div class="message-data">
+                                                <span class="message-data-time">10:12 AM, Today</span>
+                                                <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
+                                                <span>{{ chat.username|capfirst }}:</span>
+                                            </div>
+                                            <div class="message my-message"> {{ chat.message }}</div>
+                                        </li>
+                                    {% endif %}
                                 {% empty %}
                                     <p>No messages yet</p>
                                 {% endfor %}
