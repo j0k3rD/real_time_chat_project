@@ -87,17 +87,17 @@
                             {{ user_id|json_script:"user-id" }}
                         </div>
                     </section>
-                        <form action="#" method="POST" id="chat-form" name="chat-form">
-                            {% csrf_token %}
-                            <div class="chat-message clearfix">
-                                <div class="input-group mb-0">
-                                    <input type="text" name="form_message" class="form-control" id="form_message" placeholder="Enter text here...">
-                                    <div class="input-group-prepend">
-                                        <button id="chat-message-submit" type="submit" class="input-group-text"><i class="fa fa-send"></i></button>
-                                    </div>
+                    <form action="#" method="POST" id="chat-form" name="chat-form">
+                        {% csrf_token %}
+                        <div class="chat-message clearfix">
+                            <div class="input-group mb-0">
+                                <input type="text" name="form_message" class="form-control" id="form_message" placeholder="Enter text here...">
+                                <div class="input-group-prepend">
+                                    <button id="chat-message-submit" type="submit" class="input-group-text"><i class="fa fa-send"></i></button>
                                 </div>
                             </div>
-                        </form>        
+                        </div>
+                    </form>        
                 </div>
             </div>
         </div>
@@ -105,113 +105,7 @@
 </div>
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
-<script type="text/javascript">
-	
-</script>
-<script>
-    // Obtener el nombre del grupo por medio del id
-    const groupID = JSON.parse(document.getElementById('group-id').textContent);
-    const username = JSON.parse(document.getElementById('username').textContent);
-    const userID = JSON.parse(document.getElementById('user-id').textContent);
-
-    // Conectar al grupo
-    var wss = new WebSocket(
-        'wss://' 
-        + window.location.host
-        + '/wss/chat/group/'
-        + groupID
-        + '/'
-    );
-
-    // Conectar al grupo
-    wss.onopen = function(e) {   
-        console.log('Connection established');
-    };
-    
-    // Recibir datos del chat
-    //    wss.onmessage = function(e) {
-    //        const data = JSON.parse(e.data);
-    //        document.getElementById('chat-log').innerHTML += `${data.username}: ${data.message}\n`;
-    //        // Hacer scroll hacia abajo para mostrar el último mensaje
-    //        document.getElementById('chat-log').scrollTop = document.getElementById('chat-log').scrollHeight;
-    //    };
-
-    // Recibir datos del chat
-    wss.onmessage = function(e) {
-        const data = JSON.parse(e.data);
-        const chatLog = document.getElementById('chat-log');
-
-        console.log(data);
-
-        // Crea un nuevo elemento <li>
-        const li = document.createElement('li');
-        // Agrega la clase clearfix al elemento <li>
-        li.className = 'clearfix';
-
-        // Verifica si el remitente del mensaje es el usuario actual
-        if (data.username === username) {
-            // Agrega el contenido al elemento <li>
-            li.innerHTML = `
-                <div class="message-data text-right">
-                    <span class="message-data-time">10:10 AM, Today</span>
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                    <span>You:</span>
-                </div>
-                <div class="message other-message float-right">${data.message}</div>
-            `;
-        } else {
-            li.innerHTML = `
-                <div class="message-data">
-                    <span class="message-data-time">10:10 AM, Today</span>
-                    <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
-                    <span>${data.username}:</span>
-                </div>
-                <div class="message my-message">${data.message}</div>
-            `;
-        }
-    
-        // Imprime el elemento <li> en la consola
-        console.log('esto es li: ' + li);
-
-        // Agrega el <li> al inicio del contenedor
-        chatLog.insertAdjacentElement('afterbegin', li);
-    
-        // Imprime la altura del contenedor
-        console.log('esto es chatLog.scrollTop: ' + chatLog.scrollTop);
-
-        // Hacer scroll hacia abajo para mostrar el último mensaje
-        chatLog.scrollTop = chatLog.scrollHeight;
-    };
-
-    // Desconectar del grupo
-    wss.onclose = function(e) {
-        console.log('Connection closed');
-    };
-
-    // Enviar datos del chat
-    document.getElementById('chat-form').onsubmit = function(e) {
-        e.preventDefault();
-        const message = document.getElementById('form_message').value;
-        
-        if (message === '') {
-            alert('Please enter a message.');
-            return;
-        }
-        
-        wss.send(JSON.stringify({
-            'message': message,
-            'username': username,
-            'user_id': userID,
-        }));
-
-        // Limpiar el campo de entrada después de enviar el mensaje
-        document.getElementById('form_message').value = '';
-    };
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var messageBox = document.getElementById('message_box');
-        messageBox.scrollTop = messageBox.scrollHeight;
-      });     
-</script>
+<script type="text/javascript"></script>
+<script src="{% static 'scripts/chatEngine.js' %}"></script>
+<script src="{% static 'scripts/scrollToBottom.js' %}"></script>
 {% endblock %}
