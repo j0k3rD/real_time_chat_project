@@ -1,65 +1,39 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'style/styles.css' %}">
-    <title>Chat en grupo</title>
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-light bg-light">
-            <div class="container-fluid">
-              <a class="navbar-brand" href="#">
-                <img src="{% static 'img/live-chat-logo.png' %}" alt="" width="80" height="60" class="d-inline-block align-text-center">
-                Real time chat
-              </a>
-            </div>
-          </nav>
-    </header>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12 d-flex justify-content-center align-items-center vh-100">
-                    <div class="p-3 mb-2 bg-dark text-white" style="border-radius: 10px; width: 600px; transform: translateY(-50%);">
-                        <p style="color: #2596ff; text-align: center; font-size: x-large;">Real time Chat</p>
-                            <form method="POST" action=>
-                                {% csrf_token %}    
-                                <!-- {{ form.as_p }} -->
-                                <div class="links">
-                                    <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">Email address</label>
-                                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
-                                        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="exampleInputPassword1" class="form-label">Password</label>
-                                        <input type="password" class="form-control" id="password" name="password">
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Sign in</button>
-                            </form>
-                        <div class="d-flex justify-content-center">
-                            <a href="{{user_url}}/register/">If you do not have account, register!</a>
+{% block title %}Login{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 d-flex justify-content-center align-items-center vh-100">
+                <div class="p-3 mb-2 bg-white text-black" style="border-radius: 10px; width: 600px; transform: translateY(-50%);">
+                    <p style="color: #2596ff; text-align: center; font-size: x-large;">Real time Chat</p>
+                    <form method="POST" action=>
+                        {% csrf_token %}    
+                        <div class="links">
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Email address</label>
+                                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
+                                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputPassword1" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password">
+                            </div>
                         </div>
+                        <button type="submit" class="btn btn-primary">Sign in</button>
+                    </form>
+                    <div class="d-flex justify-content-center">
+                        <a href="{{user_url}}/register/">If you do not have account, register!</a>
                     </div>
                 </div>
             </div>
         </div>
-        {% if error %}
+    </div>
+    {% if error %}
         <div class="d-flex justify-content-center">
             <div class="alert alert-danger" role="alert">
                 {{ error }}
             </div>
         </div>
-        {% endif %}
-        
-    <footer class="footer mt-auto py-3">
-        <span style="margin: 10px ;" class="text-muted">Real time chat ©<script>document.write(new Date().getFullYear())</script> </span>
-    </footer>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-</body>
-</html>
+    {% endif %}
+{% endblock %}

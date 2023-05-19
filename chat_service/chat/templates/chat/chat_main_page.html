@@ -1,23 +1,19 @@
 {% extends 'base_chat.html' %}
 {% load static %}
-{% block head %}
-<link rel="stylesheet" href="{% static 'style/styles.css' %}">
-{% endblock %}
+{% block title %}Welcome to Real Time Chat!{% endblock %}
 {% block content %}
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-12 d-flex justify-content-center align-items-center vh-100">
-            {% for group in groups %}
-              <div class="card card-chat card-hov" style="width: 16rem; transform: translateY(-50%);">
-                  <img class="chat-img" src="{% static 'img/group-chat-1.png' %}">
-                  <div class="card-body">
-                    <h5 class="card-title">{{ group.name }}</h5>
-                    <p class="card-text">Aquí va el texto relacionado a la descripción del grupo.</p>
-                    <a href="{{ chat_url }}/group_chat/{{ group.id }}" class="btn btn-primary">Enter chat</a>
-                  </div>
-              </div>
-            {% endfor %}
-          </div>
+      <div class="d-flex justify-content-center item">
+        <div class="d-flex flex-wrap justify-content-center item2">
+          {% for group in groups %}
+            <div class="card card-chat card-hov" style="width: 16rem;">
+                <img class="chat-img" src="{% static 'img/group-chat-1.png' %}" style="width: 200px; height: auto;">
+                <div class="card-body">
+                  <h5 class="card-title">{{ group.name }}</h5>
+                  <p class="card-text">Aquí va el texto relacionado a la descripción del grupo.</p>
+                  <a href="{{ chat_url }}/group/{{ group.id }}" class="btn btn-primary">Enter chat</a>
+                </div>
+            </div>
+          {% endfor %}
         </div>
-      </div>           
+      </div>         
 {% endblock %}

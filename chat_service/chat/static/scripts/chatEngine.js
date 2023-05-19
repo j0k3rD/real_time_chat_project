@@ -19,7 +19,7 @@ wss.onopen = function(e) {
 
 // Función para hacer scroll hacia abajo en el chat
 function scrollToBottom() {
-    const chatLog = document.getElementById('chat-log');
+    const chatLog = document.getElementById('message_box');
     chatLog.scrollTop = chatLog.scrollHeight;
 };
 
