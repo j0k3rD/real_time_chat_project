@@ -1,6 +1,10 @@
 {% extends 'base_chat.html' %}
 {% load static %}
 {% block title %}Welcome to Real Time Chat!{% endblock %}
+{% block head %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'style/styles.css' %}">
+{% endblock %}
 {% block content %}
       <div class="d-flex justify-content-center item">
         <div class="d-flex flex-wrap justify-content-center item2">
@@ -10,7 +14,7 @@
                 <div class="card-body">
                   <h5 class="card-title">{{ group.name }}</h5>
                   <p class="card-text">Aquí va el texto relacionado a la descripción del grupo.</p>
-                  <a href="{{ chat_url }}/group/{{ group.id }}" class="btn btn-primary">Enter chat</a>
+                  <a href="{{ chat_url }}/group_chat/{{ group.id }}" class="btn btn-primary">Enter chat</a>
                 </div>
             </div>
           {% endfor %}

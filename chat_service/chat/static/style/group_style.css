@@ -10,13 +10,6 @@ body{
     margin-top: 100px;
 }
 
-/* .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh;
-} */
-
 .card {
     background: #fff;
     transition: .5s;
@@ -187,7 +180,7 @@ body{
 
 .chat .chat-history .other-message:after {
     border-bottom-color: #e8f1f3;
-    left: 93%
+    left: 70%
 }
 
 .chat .chat-message {
