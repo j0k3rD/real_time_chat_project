@@ -10,6 +10,64 @@ body{
     margin-top: 100px;
 }
 
+.nav * {
+box-sizing: border-box;
+transition: all .35s ease;
+
+}
+
+.nav li {
+display: inline-block;
+list-style: outside none none;
+margin: .5em 1em;
+padding: 0;
+}
+
+.nav li {
+padding: .5em .8em;
+position: relative;
+font-family: Arial, Helvetica, sans-serif;
+font-weight: bold;
+}
+
+.nav li::before,
+.nav li::after {
+content: '';
+height: 14px;
+width: 14px;
+position: absolute;
+transition: all .35s ease;
+opacity: 0;
+}
+
+.nav li::before {
+content: '';
+right: 0;
+top: 0;
+border-top: 3px solid hsl(182, 90%, 52%);
+border-right: 3px solid hsl(182, 90%, 52%);
+transform: translate(-100%, 50%);
+}
+
+.nav li:after {
+content: '';
+left: 0;
+bottom: 0;
+border-bottom: 3px solid hsl(182, 90%, 52%);
+border-left: 3px solid hsl(182, 90%, 52%);
+transform: translate(100%, -50%)
+}
+
+.nav li:hover:before,
+.nav li:hover:after{
+transform: translate(0,0);
+opacity: 1;
+}
+
+.nav li:hover {
+color: hsl(180, 94%, 51%);
+}
+
 .card {
     background: #fff;
     transition: .5s;

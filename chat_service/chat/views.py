@@ -1,7 +1,7 @@
 import redis
 import mysql.connector
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from decouple import config
@@ -14,6 +14,16 @@ from .services.message_service import MessageService
 chatBreaker = pybreaker.CircuitBreaker(fail_max=5, reset_timeout=60, listeners=[ChatListener()])
 groupService = GroupService()
 messageService = MessageService()
+
+@chatBreaker
+def logout(request):
+    if request.method == 'POST':
+        user_url = config('USER_URL')
+        # Redirigir a la página de login
+        response = redirect(user_url + "/login/")
+        # Eliminar la cookie de sesión
+        response.delete_cookie('sessionid')
+        return response
 
 @chatBreaker
 def get_token_page(request):
