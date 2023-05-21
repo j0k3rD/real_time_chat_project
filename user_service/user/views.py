@@ -29,17 +29,20 @@ def user_login(request):
         try:
             user = userService.get_by_email(email)
         except:
-            return render(request, 'login.html', {'error': 'Email do not exist.'})
+            return __return_to_login(request, 'Email do not exist.')
 
         if userService.check_password(password, user.password):
             token = functions.get_tokens_for_user(user)
+            
             try:
                 response = HttpResponseRedirect(chat_url + "/token/" + "?refresh={}".format(token["refresh"]), {'user_url': user_url})
+                if response.status_code == 302:
+                    response = __return_to_login(request, 'Chat service is down')
             except:
-                response = render(request, 'login.html', {'error': 'Error with the chat service.'})
+                response = __return_to_login(request, 'Error with Chat service.')
             return response
         else:
-            return render(request, 'login.html', {'error': 'Incorrect password.'})                     
+            return __return_to_login(request, 'Incorrect password.')                  
     else:
         form = AuthenticationForm()
         return render(request, 'login.html', {'form': form})   
@@ -65,7 +68,7 @@ def register(request):
                 userService.add(username=username, email=email, password=password)
                 return redirect(config('USER_URL') + "/login/")
         else:
-            return render(request, 'register.html', {'error': 'Todos los campos son obligatorios.'})
+            return render(request, 'register.html', {'error': 'All fields are required.'})
     else:
         return render(request, 'register.html')
 
@@ -125,3 +128,18 @@ def refresh_token(request):
             return JsonResponse({'message': 'Token not refreshed.'}, status=500)
     else:
         return JsonResponse({'message': 'Method not allowed.'}, status=405)
+    
+def __return_to_login(request, error = None):
+    '''
+    Función que retorna a la página de login
+
+    - Args:
+        - error (str): Error a mostrar. Defaults to None.
+
+    - Returns:
+        - render: Retorna la página de login
+    '''
+    if error:
+        return render(request, 'login.html', {'error': error})
+    else:
+        return render(request, 'login.html')

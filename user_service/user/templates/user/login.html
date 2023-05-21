@@ -4,8 +4,8 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-sm-12 d-flex justify-content-center align-items-center vh-100">
-                <div class="p-3 mb-2 bg-white text-black" style="border-radius: 10px; width: 600px; transform: translateY(-50%);">
+            <div class="col-sm-10 d-flex flex-column justify-content-center align-items-center vh-100">
+                <div class="p-3 mb-2 bg-white text-black" style="border-radius: 10px; width: 600px; transform: translateY(-40%);">
                     <p style="color: #2596ff; text-align: center; font-size: x-large;">Real time Chat</p>
                     <form method="POST" action=>
                         {% csrf_token %}    
@@ -26,14 +26,14 @@
                         <a href="{{user_url}}/register/">If you do not have account, register!</a>
                     </div>
                 </div>
+                {% if error %}
+                <div class="p-3 mb-2 bg-white text-black" style="border-radius: 10px; width: 600px; transform: translateY(-125%);">
+                    <div class="alert alert-danger text-center" role="alert">
+                        {{ error }}
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
-    {% if error %}
-        <div class="d-flex justify-content-center">
-            <div class="alert alert-danger" role="alert">
-                {{ error }}
-            </div>
-        </div>
-    {% endif %}
 {% endblock %}
