@@ -18,6 +18,7 @@ from django.urls import path
 from .views import user_login, health_check, register, refresh_token, remove_token
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('login/', user_login, name='login'),
@@ -25,4 +26,5 @@ urlpatterns = [
     path('register/', register, name='register'),
     path('api/refresh/', refresh_token, name='remove_token'),
     path('api/blacklist/', remove_token, name='refresh_token'),
-]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path('', TemplateView.as_view(template_name='index.html')),
+]

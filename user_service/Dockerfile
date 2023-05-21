@@ -29,6 +29,15 @@ RUN npm cache clean --force
 # Instalamos las dependencias de React
 RUN npm install
 
+# Cambiamos al directorio de la aplicación React
+WORKDIR /home/djangoapp/frontend
+
+# Ejecutamos el comando npm run build para generar los archivos estáticos
+RUN npm run build
+
+# Copiamos los archivos estáticos generados al directorio apropiado en la imagen final
+RUN cp -r build/* /home/djangoapp/user/static/
+
 # Volvemos al directorio principal del proyecto
 WORKDIR /home/djangoapp
 
