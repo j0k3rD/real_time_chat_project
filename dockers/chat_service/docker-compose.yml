@@ -2,7 +2,7 @@ version: '3.3'
 services:
   chatservice:
     # container_name: chatservice
-    image: chatservice:v0.6.0
+    image: chatservice:v0.7.0
 
     networks:
       - red

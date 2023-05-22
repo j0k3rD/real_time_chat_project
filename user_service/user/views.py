@@ -15,15 +15,6 @@ from django.views.decorators.csrf import csrf_exempt
 userBreaker = pybreaker.CircuitBreaker(fail_max=5, reset_timeout=60, listeners=[UserListener()])
 userService = UserService()
 
-@userBreaker
-def chat_service_availability(chat_url):
-    try:
-        response = requests.get(chat_url)
-        return response.status_code == 200
-    except requests.exceptions.RequestException:
-        return False
-
-
 @cache_page(60 * 5)
 @userBreaker #! NO ES NECESARIO SI SE USA CACHE
 def user_login(request):
@@ -44,11 +35,11 @@ def user_login(request):
             token = functions.get_tokens_for_user(user)
             
             try:
-                response = HttpResponseRedirect(chat_url + "/token/" + "?refresh={}".format(token["refresh"]), {'user_url': user_url})
-                # if chat_service_availability(chat_url):
-                #     response = HttpResponseRedirect(chat_url + "/token/" + "?refresh={}".format(token["refresh"]), {'user_url': user_url})
-                # else:
-                #     response = __return_to_login(request, 'Chat service is down')
+                #response = HttpResponseRedirect(chat_url + "/token/" + "?refresh={}".format(token["refresh"]), {'user_url': user_url})
+                if __chat_service_availability():
+                    response = HttpResponseRedirect(chat_url + "/token/" + "?refresh={}".format(token["refresh"]), {'user_url': user_url})
+                else:
+                    response = __return_to_login(request, 'Chat service is down')
             except:
                 response = __return_to_login(request, 'Error with Chat service.')
             return response
@@ -154,3 +145,22 @@ def __return_to_login(request, error = None):
         return render(request, 'login.html', {'error': error})
     else:
         return render(request, 'login.html')
+    
+def __chat_service_availability(chat_url = config("LOCAL_CHAT_URL")):
+    '''
+    Funcion que verifica si el servicio de chat esta disponible
+
+    - Args:
+        - chat_url (str): URL del servicio de chat. Defaults to config("LOCAL_CHAT_URL").
+
+    - Returns:
+        - bool: True si esta disponible, False si no lo esta.
+    '''
+
+    try:
+        response = requests.get(chat_url + "/health_check/")
+        print(response.status_code)
+        return response.status_code == 200
+    except Exception as exception:
+        print("error:", exception)
+        return False
