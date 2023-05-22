@@ -28,7 +28,6 @@ def logout(request):
 @chatBreaker
 def get_token_page(request):
     refresh = request.GET.get('refresh', None)
-    user_url = config('USER_URL')
 
     if refresh is not None:
         token = functions.refresh_token(refresh)
