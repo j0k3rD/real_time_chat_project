@@ -5,7 +5,10 @@ services:
     image: chatservice:v0.6.0
 
     networks:
-      - red
+      red:
+        aliases:
+          - chat.chat.localhost
+          - user.chat.localhost
     env_file:
       - .env
     restart: always

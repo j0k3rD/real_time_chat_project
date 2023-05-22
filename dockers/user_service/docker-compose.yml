@@ -5,7 +5,10 @@ services:
         image: userservice:v0.7.0
 
         networks:
-            - red
+            red:
+                aliases:
+                    - chat.chat.localhost
+                    - user.chat.localhost
         # ports:
             # - "9000:9000"
         env_file:
