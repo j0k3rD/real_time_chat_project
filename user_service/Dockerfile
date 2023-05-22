@@ -35,14 +35,14 @@ COPY ./frontend /home/djangoapp/frontend
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs
 
+# Cambiamos al directorio de la aplicación React
+WORKDIR /home/djangoapp/frontend
+
 # Limpiamos la caché de NPM
 RUN npm cache clean --force
 
 # Instalamos las dependencias de React
 RUN npm install
-
-# Cambiamos al directorio de la aplicación React
-WORKDIR /home/djangoapp/frontend
 
 # Ejecutamos el comando npm run build para generar los archivos estáticos
 RUN npm run build
