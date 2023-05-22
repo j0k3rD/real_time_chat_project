@@ -1,14 +1,26 @@
 # Obtenemos la imagen de un kernel de Linux con Python y Node.js
 FROM python:3.10-slim-bullseye
 
-# Instalamos las dependencias del sistema
-RUN apt-get update && apt-get install -y curl gcc g++ libffi-dev libssl-dev build-essential default-mysql-client python3-mysqldb libmariadb-dev
+ENV PYTHONUNBUFFERED=1
+ENV PATH=$PATH:/home/djangoapp/.local/bin
 
 # Creamos un usuario
 RUN useradd --create-home --home-dir /home/djangoapp djangoapp
 
 # Establecemos el directorio de trabajo
 WORKDIR /home/djangoapp
+
+# Instalamos las dependencias del sistema
+# RUN apt-get update && apt-get install -y curl gcc g++ libffi-dev libssl-dev build-essential default-mysql-client python3-mysqldb libmariadb-dev
+RUN apt-get update
+RUN apt-get install -y curl gcc g++ libffi-dev libssl-dev build-essential default-mysql-client python3-mysqldb libmariadb-dev
+RUN apt-get install -y inetutils-ping
+RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
+RUN rm -rf /var/lib/apt/lists/*
+
+# Cambiamos al usuario no privilegiado
+USER root
+RUN mkdir app
 
 # Copiamos los archivos necesarios
 COPY ./user_service /home/djangoapp/user_service
@@ -46,9 +58,6 @@ ADD requirements_prod.txt ./requirements.txt
 
 # Instalamos las dependencias de Python
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Cambiamos al usuario no privilegiado
-USER djangoapp
 
 # Exponemos el puerto
 EXPOSE 9000
