@@ -15,6 +15,15 @@ from django.views.decorators.csrf import csrf_exempt
 userBreaker = pybreaker.CircuitBreaker(fail_max=5, reset_timeout=60, listeners=[UserListener()])
 userService = UserService()
 
+@userBreaker
+def chat_service_availability(chat_url):
+    try:
+        response = requests.get(chat_url)
+        return response.status_code == 200
+    except requests.exceptions.RequestException:
+        return False
+
+
 @cache_page(60 * 5)
 @userBreaker #! NO ES NECESARIO SI SE USA CACHE
 def user_login(request):
@@ -36,8 +45,10 @@ def user_login(request):
             
             try:
                 response = HttpResponseRedirect(chat_url + "/token/" + "?refresh={}".format(token["refresh"]), {'user_url': user_url})
-                if response.status_code == 302:
-                    response = __return_to_login(request, 'Chat service is down')
+                # if chat_service_availability(chat_url):
+                #     response = HttpResponseRedirect(chat_url + "/token/" + "?refresh={}".format(token["refresh"]), {'user_url': user_url})
+                # else:
+                #     response = __return_to_login(request, 'Chat service is down')
             except:
                 response = __return_to_login(request, 'Error with Chat service.')
             return response

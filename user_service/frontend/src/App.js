@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import React from 'react';
+import {MyButtons} from './myButtons.js';
 
 function App() {
   return (
@@ -13,6 +14,10 @@ function App() {
         <p>
           Now developed with React.js
         </p>
+        <p>
+        Available urls:
+        </p>
+        <MyButtons />
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
