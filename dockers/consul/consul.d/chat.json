@@ -1,0 +1,15 @@
+{
+   "Service": {
+      	"id": "chatservice",
+  	"name": "chatservice",
+	"port": 7000,
+    	"check": {
+		"id": "api-check",
+		"name": "API Health Status",
+		"http": "http://chatservice:7000/health_check/",
+		"method": "GET",
+ 		"interval": "10s"
+  		}
+	}
+}
+

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import AuthenticationForm
 from decouple import config
-import redis, mysql
+import mysql.connector
 from django.http import JsonResponse
 import pybreaker
 import requests
@@ -84,6 +84,7 @@ def health_check(request):
     mysql_user = config('DATABASE_USER')
     mysql_password = config('DATABASE_PASSWORD')
     mysql_database = config('DATABASE_NAME')
+
     try:
         cnx = mysql.connector.connect(user=mysql_user, password=mysql_password, host=mysql_host, port=mysql_port, database=mysql_database)
         cnx.ping(True)
