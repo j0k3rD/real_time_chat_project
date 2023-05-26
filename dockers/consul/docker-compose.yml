@@ -2,6 +2,7 @@ version: '3.3'
 
 services:
   consul:
+    container_name: consul
     image: consul:1.15
     restart: always
     volumes:
@@ -14,6 +15,13 @@ services:
       - red
     command: agent -bind 0.0.0.0 -disable-host-node-id=true #'agent': Script que espera a que otro este andando para correr.
     #* depend_on: no se usa porque solo se fija que este corriendo, si se levanta despues no lo vuelve a checkear.
+
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.consul.rule=Host(`consul.chat.localhost`)"
+        - "traefik.http.services.consul.loadbalancer.server.port=8500"
+        - "traefik.http.routers.consul.entrypoints=http,https"
+        
 
 networks:
     red:
