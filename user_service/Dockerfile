@@ -1,15 +1,20 @@
-# Obtenemos la imagen de un kernel de Linux con Python y Node.js
-FROM python:3.10-slim-bullseye
+# Instalación de Node.js
+FROM node:16-alpine AS build
+WORKDIR /home/djangoapp/frontend
+COPY ./frontend/package.json /home/djangoapp/frontend
+RUN yarn install
+COPY ./frontend /home/djangoapp/frontend
+RUN yarn build
+RUN npm install -g webserver.local
 
+# Obtenemos la imagen de un kernel de Linux con Python y Node.js
+FROM python:3.10-slim-bullseye AS production
 ENV PYTHONUNBUFFERED=1
 ENV PATH=$PATH:/home/djangoapp/.local/bin
-
 # Creamos un usuario
 RUN useradd --create-home --home-dir /home/djangoapp djangoapp
-
 # Establecemos el directorio de trabajo
 WORKDIR /home/djangoapp
-
 # Instalamos las dependencias del sistema
 # RUN apt-get update && apt-get install -y curl gcc g++ libffi-dev libssl-dev build-essential default-mysql-client python3-mysqldb libmariadb-dev
 RUN apt-get update
@@ -17,47 +22,20 @@ RUN apt-get install -y curl gcc g++ libffi-dev libssl-dev build-essential defaul
 RUN apt-get install -y inetutils-ping
 RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 RUN rm -rf /var/lib/apt/lists/*
-
 # Cambiamos al usuario no privilegiado
 USER root
 RUN mkdir app
-
 # Copiamos los archivos necesarios
 COPY ./user_service /home/djangoapp/user_service
 COPY ./user /home/djangoapp/user
 COPY ./manage.py /home/djangoapp/
 COPY ./entrypoint.sh /home/djangoapp/entrypoint.sh
-
-# Copiamos la carpeta 'frontend'
-COPY ./frontend /home/djangoapp/frontend
-
-# Instalamos las dependencias de React
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
-RUN apt-get install -y nodejs
-
-# Cambiamos al directorio de la aplicación React
-WORKDIR /home/djangoapp/frontend
-
-# Limpiamos la caché de NPM
-RUN npm cache clean --force
-
-# Instalamos las dependencias de React
-RUN npm install
-
-# Ejecutamos el comando npm run build para generar los archivos estáticos
-RUN npm run build
-
-# Copiamos los archivos estáticos generados al directorio apropiado en la imagen final
-RUN cp -r build/* /home/djangoapp/user/static/
-
-# Volvemos al directorio principal del proyecto
-WORKDIR /home/djangoapp
-
 # TODO: Cambiar por requirements_production.txt
 ADD requirements_prod.txt ./requirements.txt
-
 # Instalamos las dependencias de Python
 RUN pip install --no-cache-dir -r requirements.txt
+
+COPY --from=build /home/djangoapp/frontend/build /home/djangoapp/frontend/build
 
 # Exponemos el puerto
 EXPOSE 9000
