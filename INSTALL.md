@@ -257,7 +257,9 @@ Ya con el grupo creado podemos ingresar a la página [user.chat.localhost/login]
 En caso de encontrarte el error de **/entrypoint.sh** no encontrado el archivo o directorio, es un problema de permisos, la solución depende segun sistema operativo:
 - Windows: En caso del sistema operativo Windows, es eliminar y volver a crear el archivo **/entrypoint.sh** dentro del **user_service** o **chat_service** segun que contenedor este dando el error. 
 - Linux: En caso del sistema operativo Linux, la solución es darle permisos por **chmod** al **/entrypoint.sh** dentro del **user_service** o **chat_service** segun que contenedor este dando el error.
- > chmod 777 entrypoint.sh
+> chmod 777 entrypoint.sh
+
+**En caso de que lo anterior no funcione**, agradecimientos totales a **Diego Alejandro Conde** en compartir solución, en resumen es ingresar el siguiente comando en **cmd** 
 > *git config --global core.autocrift input*
 
 ![error entrypoint](https://i.ibb.co/4tZxgdh/error.png)
