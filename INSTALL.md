@@ -258,5 +258,8 @@ En caso de encontrarte el error de **/entrypoint.sh** no encontrado el archivo o
 - Windows: En caso del sistema operativo Windows, es eliminar y volver a crear el archivo **/entrypoint.sh** dentro del **user_service** o **chat_service** segun que contenedor este dando el error. 
 - Linux: En caso del sistema operativo Linux, la solución es darle permisos por **chmod** al **/entrypoint.sh** dentro del **user_service** o **chat_service** segun que contenedor este dando el error.
  > chmod 777 entrypoint.sh
+> *git config --global core.autocrift input*
+
+![error entrypoint](https://i.ibb.co/4tZxgdh/error.png)
 
 **Recuerda que al hacer estos cambios, hay que volver a generar la imagen y ejecutarlo en Docker para arreglar el problema**
