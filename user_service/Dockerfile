@@ -1,5 +1,7 @@
 # Instalación de Node.js
-FROM node:16-alpine AS build
+FROM node:19-alpine AS build
+# Soluciona error de incompatibilidad con OpenSSL3.0
+ENV NODE_OPTIONS="--openssl-legacy-provider"
 WORKDIR /home/djangoapp/frontend
 COPY ./frontend/package.json /home/djangoapp/frontend
 RUN yarn install
