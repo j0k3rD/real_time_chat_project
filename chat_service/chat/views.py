@@ -18,11 +18,10 @@ messageService = MessageService()
 @chatBreaker
 def logout(request):
     if request.method == 'POST':
-        user_url = config('USER_URL')
         # Redirigir a la página de login
-        response = redirect(user_url + "/login/")
-        # Eliminar la cookie de sesión
-        response.delete_cookie('sessionid')
+        response = HttpResponseRedirect(config('USER_URL') + "/login/")
+        functions.del_refresh_token(response)
+        functions.del_access_token(response)
         return response
 
 @chatBreaker
@@ -42,28 +41,21 @@ def get_token_page(request):
 
 @chatBreaker
 def get_main_page(request):
-    if request.method == 'POST':
-        response = functions.blacklist_refresh_token(functions.get_refresh_token(request))
-        response = HttpResponseRedirect(config('USER_URL') + "/login/")
-        response = functions.del_refresh_token(response)
-        response = functions.del_access_token(response)
-        return response
+    user_url = config('USER_URL')
+    chat_url = config('CHAT_URL')
+    token = functions.autenticate(functions.get_access_token(request))
+    if token is not None:
+        context = {
+            'groups': groupService.get_all(),
+            'chat_url': chat_url,
+            'user_id': token['user_id'],
+            'username': token['username'],
+            'email': token['email'],
+        }
+        return render(request, 'chat_main_page.html', context)
+        # return HttpResponse("Esto es el menu")
     else:
-        user_url = config('USER_URL')
-        chat_url = config('CHAT_URL')
-        token = functions.autenticate(functions.get_access_token(request))
-        if token is not None:
-            context = {
-                'groups': groupService.get_all(),
-                'chat_url': chat_url,
-                'user_id': token['user_id'],
-                'username': token['username'],
-                'email': token['email'],
-            }
-            return render(request, 'chat_main_page.html', context)
-            # return HttpResponse("Esto es el menu")
-        else:
-            return HttpResponseRedirect(user_url + "/login/", {'error': 'Invalid token.'})
+        return HttpResponseRedirect(user_url + "/login/", {'error': 'Invalid token.'})
 
 @chatBreaker
 def get_group_chat(request, group_id):

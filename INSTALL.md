@@ -260,7 +260,7 @@ En caso de encontrarte el error de **/entrypoint.sh** no encontrado el archivo o
 > chmod 777 entrypoint.sh
 
 **En caso de que lo anterior no funcione**, agradecimientos totales a **Diego Alejandro Conde** en compartir solución, en resumen es ingresar el siguiente comando en **terminal** 
-> *git config --global core.autocrift input*
+> git config --global core.autocrift input
 
 ![error entrypoint](https://i.ibb.co/4tZxgdh/error.png)
 
