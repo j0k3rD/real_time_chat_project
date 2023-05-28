@@ -1,7 +1,12 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-from .models import Message, Group
 from channels.db import database_sync_to_async
+from .services.message_service import MessageService
+from .services.group_service import GroupService
+
+
+messageService = MessageService()
+groupService = GroupService()
 
 #! APLICAR PATRON REPOSITORIO 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -56,7 +61,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = data['message']
         username = data['username']
         user_id = data['user_id']
-        group = await database_sync_to_async(Group.objects.get)(id=self.group_id)
+        group = await database_sync_to_async(groupService.get_by_id)(self.group_id)
 
         try: #TODO: Verificar despues con token
             print(message)
@@ -64,12 +69,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             print(user_id)
             print(group)
             if message != '':
-                chat = Message(
-                    message=message,
-                    user_id=user_id,
-                    username=username,
-                    group=group
-                )
+                chat = messageService.add(message, username, user_id, group)
                 await database_sync_to_async(chat.save)()
                 
                 await self.channel_layer.group_send(
