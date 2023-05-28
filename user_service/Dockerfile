@@ -2,6 +2,7 @@
 FROM node:19-alpine AS build
 # Soluciona error de incompatibilidad con OpenSSL3.0
 ENV NODE_OPTIONS="--openssl-legacy-provider"
+ENV SKIP_PREFLIGHT_CHECK=true
 WORKDIR /home/djangoapp/frontend
 COPY ./frontend/package.json /home/djangoapp/frontend
 RUN yarn install
