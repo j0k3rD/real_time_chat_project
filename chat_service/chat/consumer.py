@@ -3,6 +3,7 @@ import json
 from channels.db import database_sync_to_async
 from .services.message_service import MessageService
 from .services.group_service import GroupService
+from .models import Message
 
 
 messageService = MessageService()
@@ -69,9 +70,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
             print(user_id)
             print(group)
             if message != '':
-                chat = messageService.add(message, username, user_id, group)
+
+                chat = Message(
+                    message=message,
+                    user_id=user_id,
+                    username=username,
+                    group=group
+                )
                 await database_sync_to_async(chat.save)()
-                
+
                 await self.channel_layer.group_send(
                     self.group_name,
                     {
