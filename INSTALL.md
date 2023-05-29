@@ -259,7 +259,7 @@ En caso de encontrarte el error de **/entrypoint.sh** no encontrado el archivo o
 - Linux: En caso del sistema operativo Linux, la solución es darle permisos por **chmod** al **/entrypoint.sh** dentro del **user_service** o **chat_service** segun que contenedor este dando el error.
 > chmod 777 entrypoint.sh
 
-**En caso de que lo anterior no funcione**, agradecimientos totales a **Diego Alejandro Conde** en compartir solución, en resumen es ingresar el siguiente comando en **terminal** 
+**En caso de que lo anterior no funcione**, agradecimientos totales a **Diego Alejandro Conde** en compartir solución, en resumen es ingresar el siguiente comando en **terminal** y descargar el archivo en git.
 > git config --global core.autocrift input
 
 ![error entrypoint](https://i.ibb.co/4tZxgdh/error.png)

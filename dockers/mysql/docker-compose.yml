@@ -12,7 +12,7 @@ services:
         env_file:
             - .env
         volumes:
-            - ./_data:/var/lib/mysql
+            - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
 
         labels:
             - "traefik.enable=true"
