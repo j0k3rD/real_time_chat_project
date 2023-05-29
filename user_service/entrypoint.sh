@@ -1,9 +1,11 @@
 #!/bin/bash
 
 # Create superuser
-#export DJANGO_SUPERUSER_USERNAME=XXXXXXX
-#export DJANGO_SUPERUSER_PASSWORD=XXXXXXX
-#python3 manage.py createsuperuser --noinput
+# python3 manage.py makemigrations
+# python3 manage.py migrate
+# export DJANGO_SUPERUSER_USERNAME=XXXXXX
+# export DJANGO_SUPERUSER_PASSWORD=XXXXXX
+# python3 manage.py createsuperuser --noinput
 
 # Run server
 python3 manage.py migrate
