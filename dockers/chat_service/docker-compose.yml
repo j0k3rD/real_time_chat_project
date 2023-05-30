@@ -15,21 +15,23 @@ services:
 
     #Configuracion Autoscaling de Traefik
     # deploy:
-    #     replicas: 1
+    #     replicas: 2
 
-    labels:
-    - "traefik.enable=true"
-    - "traefik.http.routers.chatservice.rule=Host(`${NAME}.localhost`)" # && PathPrefix(`/ws`)"
-    - "traefik.http.routers.chatservice.tls=true"
-    - "traefik.http.services.chatservice.loadbalancer.server.port=7000"
-    - "traefik.http.routers.chatservice.entrypoints=http,https,redis,mysql,wss"
-    - "traefik.http.services.chatservice.loadbalancer.sticky.cookie=true"
+    #* No va mas porque se configura con Consul Catalog
+    # labels:
+    # - "traefik.enable=true"
+    # - "traefik.consulcatalog.connect=true"
+    # - "traefik.http.routers.chatservice.rule=Host(`${NAME}.localhost`)" # && PathPrefix(`/ws`)"
+    # - "traefik.http.routers.chatservice.tls=true"
+    # - "traefik.http.services.chatservice.loadbalancer.server.port=7000"
+    # - "traefik.http.routers.chatservice.entrypoints=http,https,redis,mysql,wss"
+    # - "traefik.http.services.chatservice.loadbalancer.sticky.cookie=true"
 
     #Configuracion Autoscaling de Traefik
-    - "traefik.autoscale=true"
+    # - "traefik.autoscale=true"
 
     #Circuit Breaker
-    - "traefik.http.middlewares.chatservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.10 || NetworkErrorRatio() > 0.10 || LatencyAtQuantileMS(50.0) > 100"
+    # - "traefik.http.middlewares.chatservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.10 || NetworkErrorRatio() > 0.10 || LatencyAtQuantileMS(50.0) > 100"
     
 networks:
   red:

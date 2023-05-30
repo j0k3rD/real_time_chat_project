@@ -14,6 +14,8 @@ from pathlib import Path
 import os
 from decouple import config
 import datetime
+from consulate import Consul
+from consulate.models import agent
 
 # Set the project root directory
 # PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -48,7 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-    'ConsulService',
+    # 'ConsulService',
 ]
 
 MIDDLEWARE = [
@@ -83,14 +85,42 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'user_service.wsgi.application'
 
-# Consul configuration
-CONSUL_AGENT_ADDRESS = config('CONSUL_AGENT_ADDRESS')
-CONSUL_AGENT_PORT = config('CONSUL_AGENT_PORT')
-CONSUL_CHECK_URL = config('CONSUL_CHECK_URL')
-CONSUL_CHECK_INTERVAL = config('CONSUL_CHECK_INTERVAL')
-CONSUL_SERVICE_NAME = config('CONSUL_SERVICE_NAME')
-CONSUL_SERVICE_ADDRESS = config('CONSUL_SERVICE_ADDRESS')
-CONSUL_SERVICE_PORT = config('CONSUL_SERVICE_PORT')
+#! Consul configuration CON DJANGO-CONSUL (DEPRECATED)
+# CONSUL_AGENT_ADDRESS = config('CONSUL_AGENT_ADDRESS')
+# CONSUL_AGENT_PORT = config('CONSUL_AGENT_PORT')
+# CONSUL_CHECK_URL = config('CONSUL_CHECK_URL')
+# CONSUL_CHECK_INTERVAL = config('CONSUL_CHECK_INTERVAL')
+# CONSUL_SERVICE_NAME = config('CONSUL_SERVICE_NAME')
+# CONSUL_SERVICE_ADDRESS = config('CONSUL_SERVICE_ADDRESS')
+# CONSUL_SERVICE_PORT = config('CONSUL_SERVICE_PORT')
+
+
+consul_client = Consul(host='172.18.0.2')
+
+#Check service
+checks = agent.Check(
+    name='User Service Check',
+    http='http://user.chat.localhost/health_check/',
+    tls_skip_verify=True, #* Para que no verifique el certificado
+    interval='10s',
+)
+
+# Register service
+consul_client.agent.service.register(
+    name='user_service',
+    #* service_id='',  Se agrega para que tome las diferentes instancias, ver id unico.
+    address='user_service-userservice-1', #* Nombre del container
+    tags=[  "traefik.enable=true",
+            "traefik.consulcatalog.connect=true",
+            "traefik.http.routers.userservice.tls=true",
+            "traefik.http.services.userservice.loadbalancer.sticky.cookie=true",
+            "traefik.http.middlewares.userservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.10 || NetworkErrorRatio() > 0.10 || LatencyAtQuantileMS(50.0) > 100",
+            "traefik.http.routers.userservice.rule=Host(`user.chat.localhost`)"
+            "traefik.http.services.userservice.loadbalancer.server.port=9000"
+            "traefik.http.routers.userservice.entrypoints=http,https,mysql,redis"
+            ],
+    checks=[checks],
+    )
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

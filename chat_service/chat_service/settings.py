@@ -14,6 +14,8 @@ from pathlib import Path
 import os
 from decouple import config
 import datetime
+from consulate import Consul
+from consulate.models import agent
 
 # Set the project root directory
 # PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -50,7 +52,7 @@ INSTALLED_APPS = [
     'channels',
     'rest_framework',
     'rest_framework_simplejwt',
-    'ConsulService',
+    # 'ConsulService',
 ]
 
 MIDDLEWARE = [
@@ -86,14 +88,41 @@ ASGI_APPLICATION = 'chat_service.asgi.application'
 
 WSGI_APPLICATION = 'chat_service.wsgi.application'
 
-# Consul configuration
-CONSUL_AGENT_ADDRESS = config('CONSUL_AGENT_ADDRESS')
-CONSUL_AGENT_PORT = config('CONSUL_AGENT_PORT')
-CONSUL_CHECK_URL = config('CONSUL_CHECK_URL')
-CONSUL_CHECK_INTERVAL = config('CONSUL_CHECK_INTERVAL')
-CONSUL_SERVICE_NAME = config('CONSUL_SERVICE_NAME')
-CONSUL_SERVICE_ADDRESS = config('CONSUL_SERVICE_ADDRESS')
-CONSUL_SERVICE_PORT = config('CONSUL_SERVICE_PORT')
+#! Consul configuration CON DJANGO-CONSUL (DEPRECATED)
+# CONSUL_AGENT_ADDRESS = config('CONSUL_AGENT_ADDRESS')
+# CONSUL_AGENT_PORT = config('CONSUL_AGENT_PORT')
+# CONSUL_CHECK_URL = config('CONSUL_CHECK_URL')
+# CONSUL_CHECK_INTERVAL = config('CONSUL_CHECK_INTERVAL')
+# CONSUL_SERVICE_NAME = config('CONSUL_SERVICE_NAME')
+# CONSUL_SERVICE_ADDRESS = config('CONSUL_SERVICE_ADDRESS')
+# CONSUL_SERVICE_PORT = config('CONSUL_SERVICE_PORT')
+
+consul_client = Consul(host='172.18.0.2')
+
+#Check service
+checks = agent.Check(
+    name='Chat Service Check',
+    http='http://chat.chat.localhost/health_check/',
+    tls_skip_verify=True, #* Para que no verifique el certificado
+    interval='10s',
+)
+
+# Register service
+consul_client.agent.service.register(
+    name='chat_service',
+    #* service_id='',  Se agrega para que tome las diferentes instancias, ver id unico.
+    address='chat_service-chatservice-1', #* Nombre del container
+    tags=[  "traefik.enable=true",
+            "traefik.consulcatalog.connect=true",
+            "traefik.http.routers.chatservice.rule=Host(`chat.chat.localhost`)",# && PathPrefix(`/ws`)"
+            "traefik.http.routers.chatservice.tls=true",
+            "traefik.http.services.chatservice.loadbalancer.server.port=7000",
+            "traefik.http.routers.chatservice.entrypoints=http,https,redis,mysql,wss",
+            "traefik.http.services.chatservice.loadbalancer.sticky.cookie=true",
+            "traefik.http.middlewares.chatservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.10 || NetworkErrorRatio() > 0.10 || LatencyAtQuantileMS(50.0) > 100"
+            ],
+    checks=[checks],
+    )
 
 # INFORMATION FOR CONSUL REGISTRATION
 

@@ -15,6 +15,14 @@ providers:
     filename: /etc/traefik/config.yml
     watch: true
 
+  consulCatalog:
+    prefix: "traefik"
+    exposedByDefault: false
+    endpoint:
+      address: "172.18.0.2:8500"
+      scheme: "http"
+    connectAware: true
+
 log:
   level: INFO
   format: common
@@ -40,6 +48,8 @@ entryPoints:
   wss:
     address: ":7000"
 
+  consulCatalog:
+    address: ":8500"
 
 # Configuración del Circuit Breaker
 http:
