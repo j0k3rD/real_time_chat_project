@@ -8,6 +8,8 @@ services:
     volumes:
      - ./config/config.json:/consul/config/config.json:ro #ro: es de read-only.
      - ./data:/consul/data:rw #rw: read-write
+     - ./consul.d/chat.json:/consul/config/chat.json:ro
+     - ./consul.d/user.json:/consul/config/user.json:ro
     ports:
       - 8500:8500
       - 8300:8300
