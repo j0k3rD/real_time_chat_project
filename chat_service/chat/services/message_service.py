@@ -1,6 +1,7 @@
 from ..repositories.message_repository import MessageRepository
 from .services import Service
 from ..models import Message as MessageModel
+from channels.db import database_sync_to_async
 
 class MessageService(Service):
     '''
@@ -12,6 +13,7 @@ class MessageService(Service):
     def __init__(self):
         self.__repository = MessageRepository()
 
+    @database_sync_to_async
     def add(self, message, user_id, username, group):
         message = MessageModel(
             message=message,

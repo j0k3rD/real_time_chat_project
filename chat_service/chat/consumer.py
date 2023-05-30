@@ -71,13 +71,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             print(group)
             if message != '':
 
-                chat = Message(
-                    message=message,
-                    user_id=user_id,
-                    username=username,
-                    group=group
-                )
-                await database_sync_to_async(chat.save)()
+                await messageService.add(message, user_id, username, group)
 
                 await self.channel_layer.group_send(
                     self.group_name,
