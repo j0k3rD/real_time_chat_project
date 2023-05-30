@@ -12,11 +12,36 @@ CONSUL_KEY_PREFIX = 'config'
 ENV_VARIABLES = {
     'chat_service': {
         'ENV_FILE': CHAT_SERVICE_DIR / '.env',
-        'KEYS': ['SECRET_KEY', 'NAME'],
+        'KEYS': [
+                    'SECRET_KEY', 
+                    'NAME',
+                    # 'DATABASE_NAME',
+                    # 'DATABASE_USER',
+                    # 'DATABASE_PASSWORD',
+                    # 'DATABASE_HOST',
+                    # 'DATABASE_PORT',
+                    # 'REDIS_HOST',
+                    # 'REDIS_PORT',
+                    # 'STATIC_PATH',
+                    # 'CHAT_URL',
+                    # 'USER_URL',
+                    # 'LOCAL_USER_URL',
+                    # 'CONSUL_AGENT_ADDRESS',
+                    # 'CONSUL_AGENT_PORT',
+                    # 'CONSUL_CHECK_URL',
+                    # 'CONSUL_CHECK_INTERVAL',
+                    # 'CONSUL_SERVICE_NAME',
+                    # 'CONSUL_SERVICE_ADDRESS',
+                    # 'CONSUL_SERVICE_PORT',
+                    ],
     },
     'user_service': {
         'ENV_FILE': USER_SERVICE_DIR / '.env',
-        'KEYS': ['SECRET_KEY', 'NAME'],
+        'KEYS': [
+                    'SECRET_KEY', 
+                    'NAME'
+                    # Agregar las variables de entorno que se quieran registrar
+                    ],
     },
 }
 
