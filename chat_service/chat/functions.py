@@ -1,26 +1,48 @@
+import consul
+# from decouple import Config, RepositoryEnv
 from rest_framework_simplejwt.tokens import AccessToken
 import requests
-from decouple import config
+import json
+
+CONSUL_AGENT_HOST = 'consul'
+CONSUL_AGENT_PORT = 8500
+consul_client = consul.Consul(host=CONSUL_AGENT_HOST, port=CONSUL_AGENT_PORT)
+
+# # Obtener valores de Consul para el chat_service
+# config = Config(RepositoryEnv('.env'))
+
+# Ejemplo de obtener la key LOCAL_USER_URL desde Consul
+# local_user_url = consul_client.kv.get('chat_service/config/LOCAL_USER_URL')[1]['Value'].decode('utf-8')
+
+key = 'chat_service/config'
+index, data = consul_client.kv.get(key)
+
+if data:
+    value = data['Value'].decode('utf-8')
+    config_dict = json.loads(value)
+    local_user_url = config_dict.get('LOCAL_USER_URL')
+    print("LOCAL_USER_URL:", local_user_url)
+else:
+    print("La clave 'LOCAL_USER_URL' no existe en Consul.")
 
 # Autenticación del token, si no existe o es inválido, redirige al login
 # TODO: Ver si se puede refrescar el token en caso de expirar.
-def autenticate(token_str):
-
+def authenticate(token_str):
     if token_str is None:
         return None
 
     try:
         token = AccessToken(token_str)
     except:
-        token = None  
+        token = None
     return token
 
 def refresh_token(refresh_token):
-    response = requests.post(f'{config("LOCAL_USER_URL")}/api/refresh/', data = {'refresh_token': refresh_token})
+    response = requests.post(f'{local_user_url}/api/refresh/', data={'refresh_token': refresh_token})
     return response
 
 def blacklist_refresh_token(refresh_token):
-    response = requests.post(f'{config("LOCAL_USER_URL")}/api/blacklist/', data = {'refresh_token': refresh_token})
+    response = requests.post(f'{local_user_url}/api/blacklist/', data={'refresh_token': refresh_token})
     return response
     
 def get_access_token(request):

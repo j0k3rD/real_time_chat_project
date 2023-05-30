@@ -8,7 +8,7 @@
 			"name": "API Health Status",
 			"http": "http://chatservice:7000/health_check/",
 			"method": "GET",
-			"interval": "10s"
+			"interval": "30s"
 			}
 		}
 }

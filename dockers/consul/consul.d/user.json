@@ -8,7 +8,7 @@
              "name": "API Health Status",
              "http": "http://userservice:9000/health_check/",
              "method": "GET",
-             "interval": "10s"
+             "interval": "30s"
              }
         }
 }

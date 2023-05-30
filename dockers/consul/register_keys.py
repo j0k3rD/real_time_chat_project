@@ -25,7 +25,7 @@ ENV_VARIABLES = {
                     # 'STATIC_PATH',
                     # 'CHAT_URL',
                     # 'USER_URL',
-                    # 'LOCAL_USER_URL',
+                    'LOCAL_USER_URL',
                     # 'CONSUL_AGENT_ADDRESS',
                     # 'CONSUL_AGENT_PORT',
                     # 'CONSUL_CHECK_URL',
