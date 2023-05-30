@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'channels',
     'rest_framework',
     'rest_framework_simplejwt',
-    'ConsulService',
 ]
 
 MIDDLEWARE = [
@@ -85,32 +84,6 @@ TEMPLATES = [
 ASGI_APPLICATION = 'chat_service.asgi.application'
 
 WSGI_APPLICATION = 'chat_service.wsgi.application'
-
-# Consul configuration
-CONSUL_AGENT_ADDRESS = config('CONSUL_AGENT_ADDRESS')
-CONSUL_AGENT_PORT = config('CONSUL_AGENT_PORT')
-CONSUL_CHECK_URL = config('CONSUL_CHECK_URL')
-CONSUL_CHECK_INTERVAL = config('CONSUL_CHECK_INTERVAL')
-CONSUL_SERVICE_NAME = config('CONSUL_SERVICE_NAME')
-CONSUL_SERVICE_ADDRESS = config('CONSUL_SERVICE_ADDRESS')
-CONSUL_SERVICE_PORT = config('CONSUL_SERVICE_PORT')
-
-# INFORMATION FOR CONSUL REGISTRATION
-
-# CONSUL_AGENT_ADDRESS Consul agent server's address
-
-# CONSUL_AGENT_PORT Consul agent server's port
-
-# CONSUL_CHECK_URL API on service used by consul server to check it's status
-
-# CONSUL_CHECK_INTERVAL Status check interval
-
-# CONSUL_SERVICE_NAME Local service name
-
-# CONSUL_SERVICE_ADDRESS Local service address
-
-# SERVICE_PORT Local service port
-
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

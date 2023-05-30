@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-    'ConsulService',
 ]
 
 MIDDLEWARE = [
@@ -82,15 +81,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'user_service.wsgi.application'
-
-# Consul configuration
-CONSUL_AGENT_ADDRESS = config('CONSUL_AGENT_ADDRESS')
-CONSUL_AGENT_PORT = config('CONSUL_AGENT_PORT')
-CONSUL_CHECK_URL = config('CONSUL_CHECK_URL')
-CONSUL_CHECK_INTERVAL = config('CONSUL_CHECK_INTERVAL')
-CONSUL_SERVICE_NAME = config('CONSUL_SERVICE_NAME')
-CONSUL_SERVICE_ADDRESS = config('CONSUL_SERVICE_ADDRESS')
-CONSUL_SERVICE_PORT = config('CONSUL_SERVICE_PORT')
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

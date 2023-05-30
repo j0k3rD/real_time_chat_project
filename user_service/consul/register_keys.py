@@ -1,17 +1,12 @@
 import consul
 import json
-import pathlib
 from dotenv import dotenv_values
 
-
 # Constantes y variables configurables
-CONFIG_DIR = pathlib.Path(__file__).parent.parent
-CHAT_SERVICE_DIR = CONFIG_DIR / 'chat_service'
-USER_SERVICE_DIR = CONFIG_DIR / 'user_service'
 CONSUL_KEY_PREFIX = 'config'
 ENV_VARIABLES = {
-    'chat_service': {
-        'ENV_FILE': CHAT_SERVICE_DIR / '.env',
+    'user_service': {
+        'ENV_FILE': './consul/.env',
         'KEYS': [
                     'SECRET_KEY', 
                     'NAME',
@@ -25,7 +20,7 @@ ENV_VARIABLES = {
                     # 'STATIC_PATH',
                     # 'CHAT_URL',
                     # 'USER_URL',
-                    'LOCAL_USER_URL',
+                    'LOCAL_CHAT_URL',
                     # 'CONSUL_AGENT_ADDRESS',
                     # 'CONSUL_AGENT_PORT',
                     # 'CONSUL_CHECK_URL',
@@ -35,18 +30,10 @@ ENV_VARIABLES = {
                     # 'CONSUL_SERVICE_PORT',
                     ],
     },
-    'user_service': {
-        'ENV_FILE': USER_SERVICE_DIR / '.env',
-        'KEYS': [
-                    'SECRET_KEY', 
-                    'NAME'
-                    # Agregar las variables de entorno que se quieran registrar
-                    ],
-    },
 }
 
 # Conectar con el agente Consul
-consul_client = consul.Consul()
+consul_client = consul.Consul(host='consul', port=8500)
 
 # Recorrer los servicios y sus variables de entorno correspondientes
 for service, service_config in ENV_VARIABLES.items():

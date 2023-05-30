@@ -44,6 +44,7 @@ USER root
 RUN mkdir app
 
 # Copiamos los archivos necesarios
+COPY ./consul /home/djangoapp/consul
 COPY ./user_service /home/djangoapp/user_service
 COPY ./user /home/djangoapp/user
 COPY ./manage.py /home/djangoapp/

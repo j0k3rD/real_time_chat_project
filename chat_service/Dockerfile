@@ -39,6 +39,7 @@ RUN rm -rf /var/lib/apt/lists/*
 USER djangoapp
 RUN mkdir app
 #copia la carpeta del proyecto a la imagen
+COPY ./consul /home/djangoapp/consul
 COPY ./chat_service /home/djangoapp/chat_service
 COPY ./chat /home/djangoapp/chat
 COPY ./manage.py /home/djangoapp/
