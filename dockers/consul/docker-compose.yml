@@ -22,8 +22,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.consul.rule=Host(`consul.chat.localhost`)"
         - "traefik.http.services.consul.loadbalancer.server.port=8500"
-        - "traefik.http.routers.consul.entrypoints=http,https"
-        
+        - "traefik.http.routers.consul.tls=true"
 
 networks:
     red:
