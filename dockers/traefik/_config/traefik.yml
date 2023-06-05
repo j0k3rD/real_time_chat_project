@@ -16,12 +16,17 @@ providers:
     watch: true
 
   consulCatalog:
-    prefix: "traefik"
-    exposedByDefault: false
+    refreshInterval: 30s
+    serviceName: "traefik"
     endpoint:
-      address: "172.18.0.2:8500"
+      address: "consul:8500"
       scheme: "http"
+      tls:
+        insecureSkipVerify: true
+    exposedByDefault: true
     connectAware: true
+    watch: true
+    defaultRule: "Host(`{{ normalize .Name }}.chat.localhost`)"
 
 log:
   level: INFO
@@ -69,18 +74,18 @@ http:
         servers:
           url: "http://chat.chat.localhost"
           #* Seteamos las Replicas a 1 para que no se cree un contenedor de más
-          minReplicas: 2
-          maxReplicas: 5
+          # minReplicas: 2
+          # maxReplicas: 5
           #* Seteamos el CPU a 50% para que no consuma más de lo necesario
-          cpu:
-              usage:
-                target: 50
-              requests:
-                min: 2
-                max: 4
-              limits:
-                min: 3
-                max: 6
+          # cpu:
+          #     usage:
+          #       target: 50
+          #     requests:
+          #       min: 2
+          #       max: 4
+          #     limits:
+          #       min: 3
+          #       max: 6
 
       middlewares:
         - chatservice-cb
@@ -94,17 +99,17 @@ http:
         servers:
           url: "http://user.chat.localhost"
           #* Seteamos las Replicas a 1 para que no se cree un contenedor de más
-          minReplicas: 2
-          maxReplicas: 5
+          # minReplicas: 2
+          # maxReplicas: 5
           #* Seteamos el CPU a 50% para que no consuma más de lo necesario
-          cpu:
-              usage:
-                target: 50
-              requests:
-                min: 2
-                max: 4
-              limits:
-                min: 3
-                max: 6
+          # cpu:
+          #     usage:
+          #       target: 50
+          #     requests:
+          #       min: 2
+          #       max: 4
+          #     limits:
+          #       min: 3
+          #       max: 6
       middlewares:
         - userservice-cb

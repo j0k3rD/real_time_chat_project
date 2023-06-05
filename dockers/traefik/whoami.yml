@@ -9,6 +9,7 @@ services:
             - red
         labels:
         - "traefik.enable=true"
+        - "traefik.consulcatalog.connect=true"
         - "traefik.http.routers.whoami.rule=Host(`whoami.chat.localhost`)"
         - "traefik.http.routers.whoami.tls=true"
         - "traefik.http.services.whoami.loadbalancer.server.port=80"

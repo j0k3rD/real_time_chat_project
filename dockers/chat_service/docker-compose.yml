@@ -5,17 +5,17 @@ services:
     image: chatservice:v0.7.0
 
     networks:
-      red:
-        aliases:
-          - chat.chat.localhost
-          - user.chat.localhost
+      - red
+        # aliases:
+        #   - chat.chat.localhost
+        #   - user.chat.localhost
     env_file:
       - .env
     restart: always
 
     #Configuracion Autoscaling de Traefik
-    # deploy:
-    #     replicas: 2
+    deploy:
+        replicas: 2
 
     #* No va mas porque se configura con Consul Catalog
     # labels:
@@ -27,10 +27,10 @@ services:
     # - "traefik.http.routers.chatservice.entrypoints=http,https,redis,mysql,wss"
     # - "traefik.http.services.chatservice.loadbalancer.sticky.cookie=true"
 
-    #Configuracion Autoscaling de Traefik
+    # Configuracion Autoscaling de Traefik
     # - "traefik.autoscale=true"
 
-    #Circuit Breaker
+    # Circuit Breaker
     # - "traefik.http.middlewares.chatservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.10 || NetworkErrorRatio() > 0.10 || LatencyAtQuantileMS(50.0) > 100"
     
 networks:

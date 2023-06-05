@@ -10,7 +10,7 @@ CHAT_SERVICE_DIR = CONFIG_DIR / 'chat_service'
 USER_SERVICE_DIR = CONFIG_DIR / 'user_service'
 CONSUL_KEY_PREFIX = 'config'
 ENV_VARIABLES = {
-    'chat_service': {
+    'chatservice': {
         'ENV_FILE': CHAT_SERVICE_DIR / '.env',
         'KEYS': [
                     'SECRET_KEY', 
@@ -35,7 +35,7 @@ ENV_VARIABLES = {
                     # 'CONSUL_SERVICE_PORT',
                     ],
     },
-    'user_service': {
+    'userservice': {
         'ENV_FILE': USER_SERVICE_DIR / '.env',
         'KEYS': [
                     'SECRET_KEY', 
