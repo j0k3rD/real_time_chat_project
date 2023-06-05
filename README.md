@@ -32,38 +32,7 @@ We were asked to carry out a project built with microservices connected to each 
 
 ## Architecture Graphic
 
-  
-```mermaid
-
-flowchart TD
-
-User[/User\]
-
-Admin[/Admin\]
-
-Login[Login]
-
-Chat[Group Chat]
-
-Register[Register]
-
-Database[(User/Chat)]
-
-User --> Login
-
-Login -- login --> Chat
-
-Login -- Register --> Register
-
-Chat -- get/set chat --> Database
-
-Register -- set user --> Database
-
-Register -- login --> Chat
-
-Admin -- get/set/from chat and user ----> Database
-
-```
+![diagrama de microservicios](https://i.ibb.co/qD5pFTq/Diagrama-Chat-2.png)
  
 - The user can only write in the chat once logged into the system.
 - The user can register in case of not having an account.
