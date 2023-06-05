@@ -78,7 +78,7 @@ Credits:
      * [<i>Marcos Miglierina</i>](https://github.com/XxRaXoRxX)
      * [<i>Alexis Lino</i>](https://github.com/AlexSTM2)
 
-- Instructor: Pablo Prats
+- Instructor: [<i>Pablo Prats</i>](https://github.com/pprats)
 
 - Institution: [<i>Universidad de Mendoza - Facultad de Ingenieria</i>](https://um.edu.ar/ingenieria/)
 
