@@ -43,7 +43,7 @@ def get_token_page(request):
 def get_main_page(request):
     user_url = config('USER_URL')
     chat_url = config('CHAT_URL')
-    token = functions.autenticate(functions.get_access_token(request))
+    token = functions.authenticate(functions.get_access_token(request))
     if token is not None:
         context = {
             'groups': groupService.get_all(),
@@ -61,7 +61,7 @@ def get_main_page(request):
 def get_group_chat(request, group_id):
     user_url = config('USER_URL')
     chat_url = config('CHAT_URL')
-    token = functions.autenticate(functions.get_access_token(request))
+    token = functions.authenticate(functions.get_access_token(request))
     if token is not None:
         group = groupService.get_by_id(group_id)
         messages = messageService.get_by_group_id_order_by_date(groupModel = group)
@@ -85,7 +85,7 @@ def get_group_chat(request, group_id):
 def get_group(request, group_id):
     user_url = config('USER_URL')
     chat_url = config('CHAT_URL')
-    token = functions.autenticate(functions.get_access_token(request))
+    token = functions.authenticate(functions.get_access_token(request))
     if token is not None:
         group = groupService.get_by_id(group_id)
         messages = messageService.get_by_group_id_order_by_date(groupModel = group)

@@ -2,6 +2,7 @@
 # from decouple import Config, RepositoryEnv
 from rest_framework_simplejwt.tokens import AccessToken
 import requests
+from decouple import config
 # import json
 
 # CONSUL_AGENT_HOST = '172.18.0.2'
@@ -36,12 +37,16 @@ def authenticate(token_str):
         token = None
     return token
 
+def get_url():
+    user_url = config('USER_URL')
+    return user_url
+
 def refresh_token(refresh_token):
-    response = requests.post(f'{local_user_url}/api/refresh/', data={'refresh_token': refresh_token})
+    response = requests.post(f'{get_url()}/api/refresh/', data={'refresh_token': refresh_token}, verify=False)
     return response
 
 def blacklist_refresh_token(refresh_token):
-    response = requests.post(f'{local_user_url}/api/blacklist/', data={'refresh_token': refresh_token})
+    response = requests.post(f'{get_url()}/api/blacklist/', data={'refresh_token': refresh_token}, verify=False)
     return response
     
 def get_access_token(request):

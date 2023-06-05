@@ -101,14 +101,14 @@ consul_client = Consul(host='consul')
 addr = socket.gethostbyname(socket.gethostname())
 
 #Check service
-checks = agent.Check(
-    name='Chat Service Check',
-    http='https://chat.chat.localhost/health_check/',
-    interval='10s',
-    tls_skip_verify=True, #* Para que no verifique el certificado
-    timeout="1s",
-    status="passing"
-)
+# checks = agent.Check(
+#     name='Chat Service Check',
+#     http='https://chat.chat.localhost/health_check/',
+#     interval='10s',
+#     tls_skip_verify=True, #* Para que no verifique el certificado
+#     timeout="1s",
+#     status="passing"
+# )
 
 # Register service
 
@@ -125,7 +125,7 @@ consul_client.agent.service.register(
             "traefik.http.services.chatservice.loadbalancer.sticky.cookie=true",
             "traefik.http.middlewares.chatservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.10 || NetworkErrorRatio() > 0.10 || LatencyAtQuantileMS(50.0) > 100"
         ],
-    checks=[checks],
+    # checks=[checks],
     )
 
 # INFORMATION FOR CONSUL REGISTRATION
