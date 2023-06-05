@@ -32,7 +32,7 @@ We were asked to carry out a project built with microservices connected to each 
 
 ## Architecture Graphic
 
-![diagrama de microservicios](https://i.ibb.co/qD5pFTq/Diagrama-Chat-2.png)
+![diagrama de microservicios](https://i.ibb.co/xM2ddTT/Diagrama-Chat.png)
  
 - The user can only write in the chat once logged into the system.
 - The user can register in case of not having an account.
