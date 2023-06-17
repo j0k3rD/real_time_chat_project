@@ -1,7 +1,11 @@
 from rest_framework_simplejwt.tokens import RefreshToken
-from decouple import config
 import jwt
 from .services.user_service import UserService
+from consulate import Consul
+
+
+consul_client = Consul(host='consul')
+kv = consul_client.kv
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -39,9 +43,9 @@ def refresh_token(refresh_token):
         return None
     
 def insert_claims(accessToken, username, email):
-    decodeJTW = jwt.decode(str(accessToken), config('SECRET_KEY'), algorithms=["HS256"])
+    decodeJTW = jwt.decode(str(accessToken), kv['userservice/config/SECRET_KEY'], algorithms=["HS256"])
     # add payload here!!
     decodeJTW['username'] = username
     decodeJTW['email'] = email
-    encoded = jwt.encode(decodeJTW, config('SECRET_KEY'), algorithm="HS256")
+    encoded = jwt.encode(decodeJTW, kv['userservice/config/SECRET_KEY'], algorithm="HS256")
     return encoded

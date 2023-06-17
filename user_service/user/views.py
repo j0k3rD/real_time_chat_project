@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import AuthenticationForm
-from decouple import config
 import mysql.connector
 from django.http import JsonResponse
 import pybreaker
@@ -11,6 +10,11 @@ from user.services.user_service import UserService
 from . import functions
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
+from consulate import Consul
+
+
+consul_client = Consul(host='consul')
+kv = consul_client.kv
 
 userBreaker = pybreaker.CircuitBreaker(fail_max=5, reset_timeout=60, listeners=[UserListener()])
 userService = UserService()
@@ -21,8 +25,8 @@ def user_login(request):
     """
     Función que permite el login de un usuario.
     """
-    user_url = config('USER_URL')
-    chat_url = config('CHAT_URL')
+    user_url = kv['userservice/config/USER_URL']
+    chat_url = kv['userservice/config/CHAT_URL']
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -68,7 +72,7 @@ def register(request):
                 return render(request, 'register.html', {'error': 'User already exists.'})
             else:
                 userService.add(username=username, email=email, password=password)
-                return redirect(config('USER_URL') + "/login/")
+                return redirect(kv['userservice/config/USER_URL'] + "/login/")
         else:
             return render(request, 'register.html', {'error': 'All fields are required.'})
     else:
@@ -79,11 +83,11 @@ def health_check(request):
     Función que chequea el estado de la db MySQL
     '''
     #Checkemos MySQL
-    mysql_host = config('DATABASE_HOST')
-    mysql_port = config('DATABASE_PORT')
-    mysql_user = config('DATABASE_USER')
-    mysql_password = config('DATABASE_PASSWORD')
-    mysql_database = config('DATABASE_NAME')
+    mysql_host = kv['userservice/config/DATABASE_HOST']
+    mysql_port = kv['userservice/config/DATABASE_PORT']
+    mysql_user = kv['userservice/config/DATABASE_USER']
+    mysql_password = kv['userservice/config/DATABASE_PASSWORD']
+    mysql_database = kv['userservice/config/DATABASE_NAME']
 
     try:
         cnx = mysql.connector.connect(user=mysql_user, password=mysql_password, host=mysql_host, port=mysql_port, database=mysql_database)
@@ -147,7 +151,7 @@ def __return_to_login(request, error = None):
     else:
         return render(request, 'login.html')
     
-def __chat_service_availability(chat_url = config("LOCAL_CHAT_URL")):
+def __chat_service_availability(chat_url = kv['userservice/config/LOCAL_CHAT_URL']):
     '''
     Funcion que verifica si el servicio de chat esta disponible
 

@@ -10,16 +10,21 @@ from chat.services.circuit_breaker import ChatListener
 from . import functions
 from .services.group_service import GroupService
 from .services.message_service import MessageService
+from consulate import Consul
+
 
 chatBreaker = pybreaker.CircuitBreaker(fail_max=5, reset_timeout=60, listeners=[ChatListener()])
 groupService = GroupService()
 messageService = MessageService()
 
+consul_client = Consul(host='consul')
+kv = consul_client.kv
+
 @chatBreaker
 def logout(request):
     if request.method == 'POST':
         # Redirigir a la página de login
-        response = HttpResponseRedirect(config('USER_URL') + "/login/")
+        response = HttpResponseRedirect(kv['chatservice/config/USER_URL'] + "/login/")
         functions.del_refresh_token(response)
         functions.del_access_token(response)
         return response
@@ -41,8 +46,8 @@ def get_token_page(request):
 
 @chatBreaker
 def get_main_page(request):
-    user_url = config('USER_URL')
-    chat_url = config('CHAT_URL')
+    user_url = kv['chatservice/config/USER_URL']
+    chat_url = kv['chatservice/config/CHAT_URL']
     token = functions.authenticate(functions.get_access_token(request))
     if token is not None:
         context = {
@@ -59,8 +64,8 @@ def get_main_page(request):
 
 @chatBreaker
 def get_group_chat(request, group_id):
-    user_url = config('USER_URL')
-    chat_url = config('CHAT_URL')
+    user_url = kv['chatservice/config/USER_URL']
+    chat_url = kv['chatservice/config/CHAT_URL']
     token = functions.authenticate(functions.get_access_token(request))
     if token is not None:
         group = groupService.get_by_id(group_id)
@@ -83,8 +88,8 @@ def get_group_chat(request, group_id):
 
 @chatBreaker
 def get_group(request, group_id):
-    user_url = config('USER_URL')
-    chat_url = config('CHAT_URL')
+    user_url = kv['chatservice/config/USER_URL']
+    chat_url = kv['chatservice/config/CHAT_URL']
     token = functions.authenticate(functions.get_access_token(request))
     if token is not None:
         group = groupService.get_by_id(group_id)
@@ -108,8 +113,8 @@ def health_check(request):
     Función que chequea el estado de la base de datos y el servidor de redis
     '''
     #Checkemos el Redis
-    redis_host = config('REDIS_HOST')
-    redis_port = config('REDIS_PORT')
+    redis_host = kv['chatservice/config/REDIS_HOST']
+    redis_port = kv['chatservice/config/REDIS_PORT']
 
     try:
         r = redis.Redis(host=redis_host, port=redis_port, socket_connect_timeout=1, socket_timeout=1)
@@ -119,11 +124,11 @@ def health_check(request):
         redis_status = 500
 
     #Checkemos MySQL
-    mysql_host = config('DATABASE_HOST')
-    mysql_port = config('DATABASE_PORT')
-    mysql_user = config('DATABASE_USER')
-    mysql_password = config('DATABASE_PASSWORD')
-    mysql_database = config('DATABASE_NAME')
+    mysql_host = kv['chatservice/config/DATABASE_HOST']
+    mysql_port = kv['chatservice/config/DATABASE_PORT']
+    mysql_user = kv['chatservice/config/DATABASE_USER']
+    mysql_password = kv['chatservice/config/DATABASE_PASSWORD']
+    mysql_database = kv['chatservice/config/DATABASE_NAME']
 
     try:
         cnx = mysql.connector.connect(user=mysql_user, password=mysql_password, host=mysql_host, port=mysql_port, database=mysql_database)

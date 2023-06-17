@@ -1,29 +1,10 @@
-# from consulate import Consul
-# from decouple import Config, RepositoryEnv
 from rest_framework_simplejwt.tokens import AccessToken
 import requests
-from decouple import config
-# import json
+from consulate import Consul
 
-# CONSUL_AGENT_HOST = '172.18.0.2'
-# consul_client = Consul(host=CONSUL_AGENT_HOST)
 
-# # Obtener valores de Consul para el chat_service
-# config = Config(RepositoryEnv('.env'))
-
-# Ejemplo de obtener la key LOCAL_USER_URL desde Consul
-# local_user_url = consul_client.kv.get('chat_service/config/LOCAL_USER_URL')[1]['Value'].decode('utf-8')
-
-# key = 'chat_service/config'
-# index, data = consul_client.kv.get(key)
-
-# if data:
-#     value = data['Value'].decode('utf-8')
-#     config_dict = json.loads(value)
-#     local_user_url = config_dict.get('LOCAL_USER_URL')
-#     print("LOCAL_USER_URL:", local_user_url)
-# else:
-#     print("La clave 'LOCAL_USER_URL' no existe en Consul.")
+consul_client = Consul(host='consul')
+kv = consul_client.kv
 
 # Autenticación del token, si no existe o es inválido, redirige al login
 # TODO: Ver si se puede refrescar el token en caso de expirar.
@@ -38,7 +19,7 @@ def authenticate(token_str):
     return token
 
 def get_url():
-    user_url = config('USER_URL')
+    user_url = kv['chatservice/config/USER_URL']
     return user_url
 
 def refresh_token(refresh_token):

@@ -1,4 +1,3 @@
-from decouple import config
 from django.shortcuts import redirect
 import pybreaker
 

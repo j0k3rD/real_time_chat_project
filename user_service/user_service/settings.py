@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-from decouple import config
 import datetime
 from consulate import Consul
 from consulate.models import agent
@@ -27,10 +26,41 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
+# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/kv = consul_client.kv
+
+consul_client = Consul(host='consul')
+addr = socket.gethostbyname(socket.gethostname())
+kv = consul_client.kv
+
+# Check service
+checks = agent.Check(
+    name='User Service Check',
+    http='https://user.chat.localhost/health_check/',
+    interval='10s',
+    tls_skip_verify=True, #* Para que no verifique el certificado
+    timeout="1s",
+    status="passing"
+)
+
+# Register service
+consul_client.agent.service.register(
+    name='userservice',
+    service_id = f'{kv["userservice/config/NAME"]}-{addr}',   #Se agrega para que tome las diferentes instancias, ver id unico.
+    address=addr, #* Nombre del container de docker
+    tags=[  
+            "traefik.enable=true",
+            "traefik.http.routers.userservice.tls=true",
+            "traefik.http.services.userservice.loadbalancer.sticky.cookie=true",
+            "traefik.http.middlewares.userservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.10 || NetworkErrorRatio() > 0.10 || LatencyAtQuantileMS(50.0) > 100",
+            "traefik.http.routers.userservice.rule=Host(`user.chat.localhost`)",
+            "traefik.http.services.userservice.loadbalancer.server.port=9000",
+            "traefik.http.routers.userservice.entrypoints=http,https,mysql,redis"
+        ],
+    check=checks
+    )
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = kv['userservice/config/SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -95,48 +125,17 @@ WSGI_APPLICATION = 'user_service.wsgi.application'
 # CONSUL_SERVICE_ADDRESS = config('CONSUL_SERVICE_ADDRESS')
 # CONSUL_SERVICE_PORT = config('CONSUL_SERVICE_PORT')
 
-
-consul_client = Consul(host='consul')
-addr = socket.gethostbyname(socket.gethostname())
-
-# Check service
-checks = agent.Check(
-    name='User Service Check',
-    http='https://user.chat.localhost/health_check/',
-    interval='10s',
-    tls_skip_verify=True, #* Para que no verifique el certificado
-    timeout="1s",
-    status="passing"
-)
-
-# Register service
-consul_client.agent.service.register(
-    name='userservice',
-    service_id = f'{config("NAME")}-{addr}',   #Se agrega para que tome las diferentes instancias, ver id unico.
-    address=addr, #* Nombre del container de docker
-    tags=[  
-            "traefik.enable=true",
-            "traefik.http.routers.userservice.tls=true",
-            "traefik.http.services.userservice.loadbalancer.sticky.cookie=true",
-            "traefik.http.middlewares.userservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.10 || NetworkErrorRatio() > 0.10 || LatencyAtQuantileMS(50.0) > 100",
-            "traefik.http.routers.userservice.rule=Host(`user.chat.localhost`)",
-            "traefik.http.services.userservice.loadbalancer.server.port=9000",
-            "traefik.http.routers.userservice.entrypoints=http,https,mysql,redis"
-        ],
-    checks=[checks],
-    )
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('DATABASE_NAME'),
-        'USER': config('DATABASE_USER'),
-        'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': config('DATABASE_HOST'),
-        'PORT': config('DATABASE_PORT'),
+        'NAME': kv['userservice/config/DATABASE_NAME'],
+        'USER': kv['userservice/config/DATABASE_USER'],
+        'PASSWORD': kv['userservice/config/DATABASE_PASSWORD'],
+        'HOST': kv['userservice/config/DATABASE_HOST'],
+        'PORT': kv['userservice/config/DATABASE_PORT'],
     }
 }
 
@@ -144,7 +143,7 @@ DATABASES = {
 CACHES = {
     'default': {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": config('REDIS_CACHE_URL'),
+        "LOCATION": kv['userservice/config/REDIS_CACHE_URL'],
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -202,8 +201,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-# STATIC_URL = config('STATIC_PATH')
-STATIC_URL = '/static/'
+STATIC_URL = kv['userservice/config/STATIC_PATH']
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'frontend/build/static'),

@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-from decouple import config
 import datetime
 from consulate import Consul
 from consulate.models import agent
@@ -24,15 +23,48 @@ import socket
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # django settings module
-# SETTINGS_MODULE = config('DJANGO_SETTINGS_MODULE')
+# SETTINGS_MODULE = kv['DJANGO_SETTINGS_MODULE')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+consul_client = Consul(host='consul')
+addr = socket.gethostbyname(socket.gethostname())
+kv = consul_client.kv
 
+#Check service
+checks = agent.Check(
+    name='Chat Service Check',
+    http='https://chat.chat.localhost/health_check/',
+    interval='10s',
+    tls_skip_verify=True, #* Para que no verifique el certificado
+    timeout="1s",
+    status="passing"
+)
+
+# Register service
+#* AGREGAR POLITICAS DE SEGURIDAD
+
+consul_client.agent.service.register(
+    name='chatservice',
+    service_id = f'{kv["chatservice/config/NAME"]}-{addr}',  #Se agrega para que tome las diferentes instancias, ver id unico.
+    address=addr, #* Nombre del container
+    tags=[  
+            "traefik.enable=true",
+            "traefik.http.routers.chatservice.rule=Host(`chat.chat.localhost`)",# && PathPrefix(`/ws`)"
+            "traefik.http.routers.chatservice.tls=true",
+            "traefik.http.services.chatservice.loadbalancer.server.port=7000",
+            "traefik.http.routers.chatservice.entrypoints=http,https,redis,mysql,wss",
+            "traefik.http.services.chatservice.loadbalancer.sticky.cookie=true",
+            "traefik.http.middlewares.chatservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.10 || NetworkErrorRatio() > 0.10 || LatencyAtQuantileMS(50.0) > 100"
+        ],
+    check=checks
+    )
+
+# SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY = kv['SECRET_KEY')
+SECRET_KEY = kv['chatservice/config/SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = os.getenv('DEBUG')
 DEBUG = True
@@ -89,44 +121,15 @@ ASGI_APPLICATION = 'chat_service.asgi.application'
 WSGI_APPLICATION = 'chat_service.wsgi.application'
 
 #! Consul configuration CON DJANGO-CONSUL (DEPRECATED)
-# CONSUL_AGENT_ADDRESS = config('CONSUL_AGENT_ADDRESS')
-# CONSUL_AGENT_PORT = config('CONSUL_AGENT_PORT')
-# CONSUL_CHECK_URL = config('CONSUL_CHECK_URL')
-# CONSUL_CHECK_INTERVAL = config('CONSUL_CHECK_INTERVAL')
-# CONSUL_SERVICE_NAME = config('CONSUL_SERVICE_NAME')
-# CONSUL_SERVICE_ADDRESS = config('CONSUL_SERVICE_ADDRESS')
-# CONSUL_SERVICE_PORT = config('CONSUL_SERVICE_PORT')
+# CONSUL_AGENT_ADDRESS = kv['CONSUL_AGENT_ADDRESS')
+# CONSUL_AGENT_PORT = kv['CONSUL_AGENT_PORT')
+# CONSUL_CHECK_URL = kv['CONSUL_CHECK_URL')
+# CONSUL_CHECK_INTERVAL = kv['CONSUL_CHECK_INTERVAL')
+# CONSUL_SERVICE_NAME = kv['CONSUL_SERVICE_NAME')
+# CONSUL_SERVICE_ADDRESS = kv['CONSUL_SERVICE_ADDRESS')
+# CONSUL_SERVICE_PORT = kv['CONSUL_SERVICE_PORT')
 
-consul_client = Consul(host='consul')
-addr = socket.gethostbyname(socket.gethostname())
 
-#Check service
-# checks = agent.Check(
-#     name='Chat Service Check',
-#     http='https://chat.chat.localhost/health_check/',
-#     interval='10s',
-#     tls_skip_verify=True, #* Para que no verifique el certificado
-#     timeout="1s",
-#     status="passing"
-# )
-
-# Register service
-
-consul_client.agent.service.register(
-    name='chatservice',
-    service_id = f'{config("NAME")}-{addr}',  #Se agrega para que tome las diferentes instancias, ver id unico.
-    address=addr, #* Nombre del container
-    tags=[  
-            "traefik.enable=true",
-            "traefik.http.routers.chatservice.rule=Host(`chat.chat.localhost`)",# && PathPrefix(`/ws`)"
-            "traefik.http.routers.chatservice.tls=true",
-            "traefik.http.services.chatservice.loadbalancer.server.port=7000",
-            "traefik.http.routers.chatservice.entrypoints=http,https,redis,mysql,wss",
-            "traefik.http.services.chatservice.loadbalancer.sticky.cookie=true",
-            "traefik.http.middlewares.chatservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.10 || NetworkErrorRatio() > 0.10 || LatencyAtQuantileMS(50.0) > 100"
-        ],
-    # checks=[checks],
-    )
 
 # INFORMATION FOR CONSUL REGISTRATION
 
@@ -151,11 +154,11 @@ consul_client.agent.service.register(
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('DATABASE_NAME'),
-        'USER': config('DATABASE_USER'),
-        'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': config('DATABASE_HOST'),
-        'PORT': config('DATABASE_PORT'),
+        'NAME': kv['chatservice/config/DATABASE_NAME'],
+        'USER': kv['chatservice/config/DATABASE_USER'],
+        'PASSWORD': kv['chatservice/config/DATABASE_PASSWORD'],
+        'HOST': kv['chatservice/config/DATABASE_HOST'],
+        'PORT': kv['chatservice/config/DATABASE_PORT'],
     },
 }
 
@@ -164,7 +167,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(config('REDIS_HOST'), config('REDIS_PORT'))],
+            "hosts": [(kv['chatservice/config/REDIS_HOST'], kv['chatservice/config/REDIS_PORT'])],
         },
     },
 }
@@ -211,8 +214,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 
-# STATIC_URL = config('STATIC_PATH')
-STATIC_URL = '/static/'
+STATIC_URL = 'chatservice/config/STATIC_PATH/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'frontend/build/static'),
