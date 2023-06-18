@@ -151,7 +151,7 @@ def __return_to_login(request, error = None):
     else:
         return render(request, 'login.html')
     
-def __chat_service_availability(chat_url = kv['userservice/config/LOCAL_CHAT_URL']):
+def __chat_service_availability(chat_url = kv['userservice/config/CHAT_URL']):
     '''
     Funcion que verifica si el servicio de chat esta disponible
 
@@ -163,7 +163,7 @@ def __chat_service_availability(chat_url = kv['userservice/config/LOCAL_CHAT_URL
     '''
 
     try:
-        response = requests.get(chat_url + "/health_check/")
+        response = requests.get(chat_url + "/health_check/", verify=False)
         print(response.status_code)
         return response.status_code == 200
     except Exception as exception:

@@ -14,8 +14,8 @@ services:
     restart: always
 
     #Configuracion Autoscaling de Traefik
-    deploy:
-        replicas: 2
+    # deploy:
+        # replicas: 2
 
     #* No va mas porque se configura con Consul Catalog
     # labels:

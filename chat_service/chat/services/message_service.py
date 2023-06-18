@@ -3,6 +3,7 @@ from .services import Service
 from ..models import Message as MessageModel
 from channels.db import database_sync_to_async
 
+
 class MessageService(Service):
     '''
     Clase que representa el servicio de la entidad Group

@@ -15,8 +15,8 @@ services:
             - .env
         restart: always
         # #Configuracion Autoscaling de Traefik
-        deploy:
-            replicas: 2
+        # deploy:
+        #     replicas: 2
         #     resources:
         #         limits:
                     # cpus: "0.5"

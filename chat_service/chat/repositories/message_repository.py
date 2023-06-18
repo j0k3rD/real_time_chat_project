@@ -1,6 +1,5 @@
 from .repository import Create, Delete, Read, Update 
 from ..models import Message as MessageModel
-from channels.db import database_sync_to_async
 import json
 
 class MessageRepository(Create, Read):
@@ -18,7 +17,6 @@ class MessageRepository(Create, Read):
     def type_model(self):
         return self.__type_model
     
-    @database_sync_to_async
     def create(self, model):
         model = MessageModel(
             message = model.message,
@@ -26,7 +24,6 @@ class MessageRepository(Create, Read):
             username = model.username,
             group = model.group
         )
-        print('guardado modelo', model)
         return model.save()
 
     def find_all(self):
