@@ -130,7 +130,7 @@ WSGI_APPLICATION = 'user_service.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': kv['userservice/config/DATABASE_ENGINE'],
         'NAME': kv['userservice/config/DATABASE_NAME'],
         'USER': kv['userservice/config/DATABASE_USER'],
         'PASSWORD': kv['userservice/config/DATABASE_PASSWORD'],

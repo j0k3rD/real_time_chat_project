@@ -14,6 +14,7 @@ ENV_VARIABLES = {
         'KEYS': [
             'SECRET_KEY', 
             'NAME',
+            'DATABASE_ENGINE',
             'DATABASE_NAME',
             'DATABASE_USER',
             'DATABASE_PASSWORD',

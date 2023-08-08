@@ -153,7 +153,7 @@ WSGI_APPLICATION = 'chat_service.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': kv['chatservice/config/DATABASE_ENGINE'],
         'NAME': kv['chatservice/config/DATABASE_NAME'],
         'USER': kv['chatservice/config/DATABASE_USER'],
         'PASSWORD': kv['chatservice/config/DATABASE_PASSWORD'],
