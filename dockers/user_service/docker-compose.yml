@@ -2,7 +2,7 @@ version: '3.3'
 services:
     userservice:
         # container_name: userservice
-        image: userservice:v0.7.0
+        image: userservice:v0.8.0
 
         networks:
             red:
@@ -15,8 +15,8 @@ services:
             - .env
         restart: always
         # #Configuracion Autoscaling de Traefik
-        deploy:
-            replicas: 2
+        # deploy:
+            # replicas: 2
         #     resources:
         #         limits:
                     # cpus: "0.5"
