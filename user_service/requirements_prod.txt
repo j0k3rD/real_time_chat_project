@@ -1,5 +1,5 @@
 Django==4.2.3
-redis==4.5.3
+redis==4.5.4
 django-redis==5.2.0
 requests==2.31.0
 python-decouple==3.4
