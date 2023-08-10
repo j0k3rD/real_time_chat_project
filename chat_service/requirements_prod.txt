@@ -11,4 +11,4 @@ pybreaker==1.0.1
 python-dotenv==1.0.0
 py-consulate-ms==1.0.0
 certifi==2023.7.22
-setuptools==68.0.0
+setuptools==65.5.1
