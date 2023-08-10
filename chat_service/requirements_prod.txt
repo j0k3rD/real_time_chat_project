@@ -1,6 +1,6 @@
-Django==3.2.12
-redis==4.5.4
-channels==3.0.3
+Django==4.2.3
+redis==4.6.0
+channels==3.0.5
 channels-redis==3.2.0
 requests==2.31.0
 python-decouple==3.4
@@ -8,9 +8,7 @@ pymysql==1.1.0
 mysql.connector==2.2.9
 djangorestframework-simplejwt==5.2.2
 pybreaker==1.0.1
-# django-consul==0.4.0
-# python-consul==1.1.0
 python-dotenv==1.0.0
 py-consulate-ms==1.0.0
 certifi==2023.7.22
-setup-tools==65.5.1
+setuptools==68.0.0
