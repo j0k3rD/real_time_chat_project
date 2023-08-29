@@ -5,25 +5,38 @@ services:
         container_name: traefik
         image: traefik:2.9
         restart: unless-stopped
-        security_opt:
-            - no-new-privileges:true
         ports:
             - 80:80
             - 443:443
-            # - 7000:7000
+        command:
+          - --tracing=true
+          - --tracing.serviceName=traefik
+          - --tracing.spanNameLimit=150
+          - --tracing.jaeger=true
+          - --tracing.jaeger.samplingServerURL=http://jaeger-agent:5778/sampling
+          - --tracing.jaeger.samplingType=const
+          - --tracing.jaeger.samplingParam=1.0
+          - --tracing.jaeger.localAgentHostPort=127.0.0.1:6831
+          - --tracing.jaeger.gen128Bit
+          - --tracing.jaeger.propagation=jaeger
+          - --tracing.jaeger.traceContextHeaderName=uber-trace-id
+          - --tracing.jaeger.disableAttemptReconnecting=false
+          - --tracing.jaeger.collector.endpoint=http://127.0.0.1:14268/api/traces?format=jaeger.thrift
+          - --tracing.jaeger.collector.user=my-user
+          - --tracing.jaeger.collector.password=my-password
         volumes:
           - /var/run/docker.sock:/var/run/docker.sock:ro
           - ./_config/traefik.yml:/etc/traefik/traefik.yml:ro
           - ./_config/config.yml:/etc/traefik/config.yml:ro
           - ./_certs:/etc/certs:ro
         labels:
-          - "traefik.enable=true" #Nos habilita que lo pueda ver traefik
+          - "traefik.enable=true"
           - "traefik.http.routers.traefik=true"
         networks:
             red:
               aliases:
                 - user.chat.localhost
-                - chat.chat.localhost #Se agregan para no usar un servidor DNS
+                - chat.chat.localhost
 
 networks:
     red:
