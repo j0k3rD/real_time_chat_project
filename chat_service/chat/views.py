@@ -11,7 +11,14 @@ from . import functions
 from .services.group_service import GroupService
 from .services.message_service import MessageService
 from consulate import Consul
+import logging
+from opentelemetry import trace
 
+
+logger = logging.getLogger(__name__)
+tracer = trace.get_tracer(__name__)
+
+logger.error("Log1 on ChatService!")
 
 chatBreaker = pybreaker.CircuitBreaker(fail_max=5, reset_timeout=60, listeners=[ChatListener()])
 groupService = GroupService()
@@ -46,21 +53,22 @@ def get_token_page(request):
 
 @chatBreaker
 def get_main_page(request):
-    user_url = kv['chatservice/config/USER_URL']
-    chat_url = kv['chatservice/config/CHAT_URL']
-    token = functions.authenticate(functions.get_access_token(request))
-    if token is not None:
-        context = {
-            'groups': groupService.get_all(),
-            'chat_url': chat_url,
-            'user_id': token['user_id'],
-            'username': token['username'],
-            'email': token['email'],
-        }
-        return render(request, 'chat_main_page.html', context)
-        # return HttpResponse("Esto es el menu")
-    else:
-        return HttpResponseRedirect(user_url + "/login/", {'error': 'Invalid token.'})
+    with tracer.start_as_current_span("get_main_page"):
+        user_url = kv['chatservice/config/USER_URL']
+        chat_url = kv['chatservice/config/CHAT_URL']
+        token = functions.authenticate(functions.get_access_token(request))
+        if token is not None:
+            context = {
+                'groups': groupService.get_all(),
+                'chat_url': chat_url,
+                'user_id': token['user_id'],
+                'username': token['username'],
+                'email': token['email'],
+            }
+            return render(request, 'chat_main_page.html', context)
+            # return HttpResponse("Esto es el menu")
+        else:
+            return HttpResponseRedirect(user_url + "/login/", {'error': 'Invalid token.'})
 
 @chatBreaker
 def get_group_chat(request, group_id):

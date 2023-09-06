@@ -29,8 +29,7 @@ WORKDIR /home/djangoapp
 #instala dependencias del sistema
 RUN apt-get update
 
-#! AGREGAR AQUI LAS DEPENDENCIAS REDIS??
-RUN apt-get install -y curl gcc g++ libffi-dev libssl-dev build-essential default-mysql-client python3-mysqldb libmariadb-dev
+RUN apt-get install -y curl gcc g++ libffi-dev libssl-dev build-essential default-mysql-client python3-mysqldb libmariadb-dev openssl
 RUN apt-get install -y inetutils-ping
 
 RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
@@ -45,10 +44,9 @@ COPY ./manage.py /home/djangoapp/
 COPY ./entrypoint.sh /home/djangoapp/entrypoint.sh
 
 # Requerimientos de Python
-ADD requirements_prod.txt ./requirements.txt
+ADD requirements_dev.txt ./requirements.txt
 
 RUN pip install --no-cache-dir -r requirements.txt
-# RUN pip install gevent gunicorn==20.1.0
 
 # Copiamos los archivos de la compilación de React
 COPY --from=build /home/djangoapp/frontend/build /home/djangoapp/frontend/build

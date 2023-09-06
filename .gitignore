@@ -11,3 +11,4 @@ user_service/tests/__pycache__/*
 chat_service/chat/migrations/__pycache__/*
 dockers/traefik/_certs/*
 data
+target

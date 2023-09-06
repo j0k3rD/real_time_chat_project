@@ -12,19 +12,13 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-import datetime
 from consulate import Consul
 from consulate.models import agent
 import socket
-# Set the project root directory
-# PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# django settings module
-# SETTINGS_MODULE = kv['DJANGO_SETTINGS_MODULE')
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -32,6 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 consul_client = Consul(host='consul')
 addr = socket.gethostbyname(socket.gethostname())
 kv = consul_client.kv
+
+# django settings module
+SETTINGS_MODULE = 'chat_service.settings'
 
 #Check service
 checks = agent.Check(
@@ -56,17 +53,13 @@ consul_client.agent.service.register(
             "traefik.http.routers.chatservice.tls=true",
             "traefik.http.services.chatservice.loadbalancer.server.port=7000",
             "traefik.http.routers.chatservice.entrypoints=http,https,redis,mysql,wss",
-            "traefik.http.services.chatservice.loadbalancer.sticky.cookie=true",
+            # "traefik.http.services.chatservice.loadbalancer.sticky.cookie=true",
             "traefik.http.middlewares.chatservice-cb.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.10 || NetworkErrorRatio() > 0.10 || LatencyAtQuantileMS(50.0) > 100"
         ],
     check=checks
     )
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = kv['SECRET_KEY')
 SECRET_KEY = kv['chatservice/config/SECRET_KEY']
-# SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = os.getenv('DEBUG')
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
@@ -84,10 +77,11 @@ INSTALLED_APPS = [
     'channels',
     'rest_framework',
     'rest_framework_simplejwt',
-    # 'ConsulService',
+    'django_prometheus',
 ]
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -95,6 +89,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 ROOT_URLCONF = 'chat_service.urls'
@@ -119,33 +114,6 @@ TEMPLATES = [
 ASGI_APPLICATION = 'chat_service.asgi.application'
 
 WSGI_APPLICATION = 'chat_service.wsgi.application'
-
-#! Consul configuration CON DJANGO-CONSUL (DEPRECATED)
-# CONSUL_AGENT_ADDRESS = kv['CONSUL_AGENT_ADDRESS')
-# CONSUL_AGENT_PORT = kv['CONSUL_AGENT_PORT')
-# CONSUL_CHECK_URL = kv['CONSUL_CHECK_URL')
-# CONSUL_CHECK_INTERVAL = kv['CONSUL_CHECK_INTERVAL')
-# CONSUL_SERVICE_NAME = kv['CONSUL_SERVICE_NAME')
-# CONSUL_SERVICE_ADDRESS = kv['CONSUL_SERVICE_ADDRESS')
-# CONSUL_SERVICE_PORT = kv['CONSUL_SERVICE_PORT')
-
-
-
-# INFORMATION FOR CONSUL REGISTRATION
-
-# CONSUL_AGENT_ADDRESS Consul agent server's address
-
-# CONSUL_AGENT_PORT Consul agent server's port
-
-# CONSUL_CHECK_URL API on service used by consul server to check it's status
-
-# CONSUL_CHECK_INTERVAL Status check interval
-
-# CONSUL_SERVICE_NAME Local service name
-
-# CONSUL_SERVICE_ADDRESS Local service address
-
-# SERVICE_PORT Local service port
 
 
 # Database
@@ -224,3 +192,39 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CSRF_TRUSTED_ORIGINS = ['https://*.localhost']
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'trace_formatter': {
+            'format': '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] [trace_id=%(otelTraceID)s span_id=%(otelSpanID)s] [%(funcName)s] %(message)s',  # optional, default is logging.BASIC_FORMAT
+            'datefmt': '%Y-%m-%d %H:%M:%S',  # optional, default is '%Y-%m-%d %H:%M:%S'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'formatter': 'trace_formatter',
+            'filename': 'webapp.log',
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'trace_formatter',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+    'root': {
+        'handlers': ['console', 'file'],
+        'level': 'WARNING',
+    },
+}

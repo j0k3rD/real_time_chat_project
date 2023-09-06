@@ -155,12 +155,17 @@ def __chat_service_availability(chat_url = kv['userservice/config/CHAT_URL']):
     '''
     Funcion que verifica si el servicio de chat esta disponible
 
-    - Args:
-        - chat_url (str): URL del servicio de chat. Defaults to config("LOCAL_CHAT_URL").
+    - Args: 
+        - chat_url (str): URL del servicio de chat. Defaults to config("CHAT_URL").
 
     - Returns:
         - bool: True si esta disponible, False si no lo esta.
     '''
+    print("chat_url:", chat_url)
+
+    #printear certificado
+    print(open('/etc/certs/local-cert.pem').read())
+
 
     try:
         response = requests.get(chat_url + "/health_check/", verify=False)

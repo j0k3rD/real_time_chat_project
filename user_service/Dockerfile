@@ -34,7 +34,7 @@ WORKDIR /home/djangoapp
 # Instalamos las dependencias del sistema
 # RUN apt-get update && apt-get install -y curl gcc g++ libffi-dev libssl-dev build-essential default-mysql-client python3-mysqldb libmariadb-dev
 RUN apt-get update
-RUN apt-get install -y curl gcc g++ libffi-dev libssl-dev build-essential default-mysql-client python3-mysqldb libmariadb-dev
+RUN apt-get install -y curl gcc g++ libffi-dev libssl-dev build-essential default-mysql-client python3-mysqldb libmariadb-dev openssl
 RUN apt-get install -y inetutils-ping
 RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 RUN rm -rf /var/lib/apt/lists/*
@@ -49,8 +49,19 @@ COPY ./user /home/djangoapp/user
 COPY ./manage.py /home/djangoapp/
 COPY ./entrypoint.sh /home/djangoapp/entrypoint.sh
 
+# # Creamos certificados SSL
+# RUN openssl genrsa -out /home/djangoapp/key.pem 2048
+# RUN openssl req -new -key /home/djangoapp/key.pem -out /home/djangoapp/signreq.csr -subj "/C=AR/ST=Mendoza/L=San Rafael/O=Universidad de Mendoza/OU=ING SOFT/CN=chat"
+# RUN openssl x509 -req -days 365 -in /home/djangoapp/signreq.csr -signkey /home/djangoapp/key.pem -out /home/djangoapp/certificate.pem
+
+# Copiamos los certificados SSL de la carpeta _certs
+# certificado
+# COPY ./_certs/local-cert.pem /home/djangoapp/certificate.pem
+# llave privada
+# COPY ./_certs/local-key.pem /home/djangoapp/key.pem
+
 # Requerimientos de Python
-ADD requirements_prod.txt ./requirements.txt
+ADD requirements_dev.txt ./requirements.txt
 # Instalamos las dependencias de Python
 RUN pip install --no-cache-dir -r requirements.txt
 

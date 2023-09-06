@@ -8,8 +8,6 @@ services:
     volumes:
       - ./config:/consul/config
       - ./data:/consul/data
-    #  - ./consul.d/chat.json:/consul/config/chat.json:ro
-    #  - ./consul.d/user.json:/consul/config/user.json:ro
     ports:
       - 8500:8500
       - 8300:8300
