@@ -1,0 +1,14 @@
+Django==4.2.3
+redis==4.6.0
+channels==3.0.5
+channels-redis==3.2.0
+requests==2.31.0
+python-decouple==3.4
+pymysql==1.1.0
+mysql.connector==2.2.9
+djangorestframework-simplejwt==5.2.2
+pybreaker==1.0.1
+python-dotenv==1.0.0
+py-consulate-ms==1.0.0
+setuptools==65.5.1
+pyOpenSSL==23.2.0
