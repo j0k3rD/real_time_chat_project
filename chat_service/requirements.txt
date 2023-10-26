@@ -14,3 +14,4 @@ python-consul==1.1.0
 python-dotenv==1.0.0
 certifi==2023.7.22
 setup-tools==65.5.1
+twisted>=23.10.0rc1 # not directly required, pinned by Snyk to avoid a vulnerability
