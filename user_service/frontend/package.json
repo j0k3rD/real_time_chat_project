@@ -9,7 +9,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.0",
-    "serialize-javascript": "3.1.0",
+    "serialize-javascript": "6.0.2",
     "web-vitals": "^2.1.4",
     "ansi-regex": "6.0.1",
     "immer": "9.0.6",
