@@ -1,7 +1,7 @@
 Django==4.2.4
 redis==4.5.4
 django-redis==5.2.0
-requests==2.31.0
+requests==2.32.0
 python-decouple==3.4
 pymysql==1.1.0
 mysql.connector==2.2.9
