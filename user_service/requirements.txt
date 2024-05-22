@@ -3,7 +3,7 @@ redis==4.5.4
 django-redis==5.2.0
 requests==2.31.0
 python-decouple==3.4
-pymysql==1.1.0
+pymysql==1.1.1
 mysql.connector==2.2.9
 djangorestframework-simplejwt==5.2.2
 pybreaker==1.0.1
