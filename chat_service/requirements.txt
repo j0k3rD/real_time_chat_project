@@ -2,9 +2,9 @@ Django==4.2.3
 redis==4.6.0
 channels==3.0.5
 channels-redis==3.2.0
-requests==2.31.0
+requests==2.32.0
 python-decouple==3.4
-pymysql==1.1.0
+pymysql==1.1.1
 pytest-django==4.5.2
 distutils-pytest==0.2.0
 djangorestframework-simplejwt==5.2.2
