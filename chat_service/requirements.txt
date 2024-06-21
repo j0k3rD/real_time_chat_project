@@ -2,9 +2,9 @@ Django==4.2.3
 redis==4.6.0
 channels==3.0.5
 channels-redis==3.2.0
-requests==2.31.0
+requests==2.32.2
 python-decouple==3.4
-pymysql==1.1.0
+pymysql==1.1.1
 pytest-django==4.5.2
 distutils-pytest==0.2.0
 djangorestframework-simplejwt==5.2.2
@@ -14,3 +14,7 @@ python-consul==1.1.0
 python-dotenv==1.0.0
 certifi==2023.7.22
 setup-tools==65.5.1
+setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
+sqlparse>=0.5.0 # not directly required, pinned by Snyk to avoid a vulnerability
+twisted>=23.10.0rc1 # not directly required, pinned by Snyk to avoid a vulnerability
+urllib3>=2.2.2 # not directly required, pinned by Snyk to avoid a vulnerability
