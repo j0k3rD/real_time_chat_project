@@ -12,5 +12,5 @@ pybreaker==1.0.1
 django-consul==0.4.0
 python-consul==1.1.0
 python-dotenv==1.0.0
-certifi==2023.7.22
+certifi==2024.7.4
 setup-tools==65.5.1
